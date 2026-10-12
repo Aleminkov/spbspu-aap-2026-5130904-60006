@@ -2,28 +2,28 @@
 
 int main()
 {
-  int beforePrevious = 0;
+  int before_previous = 0;
   int previous = 0;
   int count = 0;
   int found = 0;
   int x = 0;
   const int inputError = 1;
   const int minReadBeforeTriple = 2;
-  int currentLength = 0;
-  int bestLength = 0;
+  int current_length = 0;
+  int best_length = 0;
   while (std::cin >> x && x != 0) {
-    if (count >= minReadBeforeTriple && beforePrevious > previous && previous > x) {
+    if (count >= minReadBeforeTriple && before_previous > previous && previous > x) {
       ++found;
     }
     if (count > 0 && x >= previous) {
-      ++currentLength;
+      ++current_length;
     } else {
-      currentLength = 1;
+      current_length = 1;
     }
-    if (currentLength > bestLength) {
-      bestLength = currentLength;
+    if (current_length > best_length) {
+      best_length = current_length;
     }
-    beforePrevious = previous;
+    before_previous = previous;
     previous = x;
     ++count;
   }
@@ -31,6 +31,6 @@ int main()
     std::cerr << "Error: invalid input\n";
     return inputError;
   }
-  std::cout << bestLength << "\n" << found << "\n";
+  std::cout << best_length << "\n" << found << "\n";
   return 0;
 }
