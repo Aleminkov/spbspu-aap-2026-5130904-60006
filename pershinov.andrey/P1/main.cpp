@@ -17,14 +17,14 @@ int main()
   bool length_overflow = false;
   while (std::cin >> x && x != 0) {
     if (count >= minReadBeforeTriple && before_previous > previous && previous > x) {
-      if (found == std::numeric_limits<int>::max()) {
+      if (found == std::numeric_limits< int >::max()) {
         found_overflow = true;
       } else {
         ++found;
       }
     }
     if (count > 0 && x >= previous) {
-      if (current_length == std::numeric_limits<int>::max()) {
+      if (current_length == std::numeric_limits< int >::max()) {
         length_overflow = true;
       } else {
         ++current_length;
