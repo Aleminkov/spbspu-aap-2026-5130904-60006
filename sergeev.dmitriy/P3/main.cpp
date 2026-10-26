@@ -1,11 +1,11 @@
 #include <iostream>
 #include <limits>
 #include <fstream>
-#include <exception>
+#include <stdexcept>
 
 namespace segeev
 {
-  int processVariant9(const int *matrix, int rows, int cols)
+  size_t processVariant9(const int *matrix, size_t rows, size_t cols)
   {
     if (rows <= 1)
     {
@@ -27,7 +27,7 @@ namespace segeev
       }
       if (!hasDuplicates)
       {
-        if (nonRepeatingColumnsCount > std::numeric_limits< size_t >::max() - 1)
+        if (nonRepeatingColumnsCount == std::numeric_limits<size_t>::max())
         {
           throw std::overflow_error("");
         }
@@ -37,59 +37,65 @@ namespace segeev
     return nonRepeatingColumnsCount;
   }
 
-  void processVariant6(int *matrix, int rows, int cols)
+  void processVariant6(int *matrix, size_t rows, size_t cols)
   {
-    int totalElements = rows * cols;
-    int top = 0, bottom = rows - 1;
-    int left = 0, right = cols - 1;
+    if (rows > 0 && cols > std::numeric_limits<size_t>::max() / rows)
+    {
+      throw std::overflow_error("");
+    }
+    size_t totalElements = rows * cols;
 
-    int current_r = bottom;
-    int current_c = left;
+    size_t top = 0, bottom = rows - 1;
+    size_t left = 0, right = cols - 1;
+
+    size_t current_r = bottom;
+    size_t current_c = left;
     int direction = 0;
 
-    for (int step = 1; step <= totalElements; ++step)
+    for (size_t step = 1; step <= totalElements; ++step)
     {
-      if (current_r > 0 && cols > 0 && current_r > std::numeric_limits< int >::max() / cols)
+      if (current_r > 0 && cols > 0 && current_r > std::numeric_limits<size_t>::max() / cols)
       {
         throw std::overflow_error("");
       }
-      int row_offset = current_r * cols;
+      size_t row_offset = current_r * cols;
 
-      if (row_offset > 0 && current_c > std::numeric_limits< int >::max() - row_offset)
+      if (row_offset > 0 && current_c > std::numeric_limits<size_t>::max() - row_offset)
       {
         throw std::overflow_error("");
       }
-      int index = row_offset + current_c;
+      size_t index = row_offset + current_c;
+      if (step > static_cast<size_t>(std::numeric_limits<int>::max()))
+      {
+        throw std::overflow_error("");
+      }
+      int int_step = static_cast<int>(step);
 
-      if (matrix[index] > 0 && step > std::numeric_limits< int >::max() - matrix[index])
+      if (matrix[index] > 0 && int_step > std::numeric_limits<int>::max() - matrix[index])
       {
         throw std::overflow_error("");
       }
-      if (matrix[index] < 0 && step < std::numeric_limits< int >::min() - matrix[index])
+      if (matrix[index] < 0 && int_step < std::numeric_limits<int>::min() - matrix[index])
       {
         throw std::overflow_error("");
       }
-      matrix[index] += step;
+      matrix[index] += int_step;
 
       if (direction == 0)
       {
         if (current_c < right)
         {
-          if (current_c > std::numeric_limits< int >::max() - 1)
-          {
-            throw std::overflow_error("");
-          }
           current_c++;
         }
         else
         {
-          if (bottom < std::numeric_limits< int >::min() + 1)
+          if (bottom == 0)
           {
             throw std::overflow_error("");
           }
           bottom--;
 
-          if (current_r < std::numeric_limits< int >::min() + 1)
+          if (current_r == 0)
           {
             throw std::overflow_error("");
           }
@@ -101,21 +107,17 @@ namespace segeev
       {
         if (current_r > top)
         {
-          if (current_r < std::numeric_limits< int >::min() + 1)
-          {
-            throw std::overflow_error("");
-          }
           current_r--;
         }
         else
         {
-          if (right < std::numeric_limits< int >::min() + 1)
+          if (right == 0)
           {
             throw std::overflow_error("");
           }
           right--;
 
-          if (current_c < std::numeric_limits< int >::min() + 1)
+          if (current_c == 0)
           {
             throw std::overflow_error("");
           }
@@ -127,21 +129,17 @@ namespace segeev
       {
         if (current_c > left)
         {
-          if (current_c < std::numeric_limits< int >::min() + 1)
-          {
-            throw std::overflow_error("");
-          }
           current_c--;
         }
         else
         {
-          if (top > std::numeric_limits< int >::max() - 1)
+          if (top == std::numeric_limits<size_t>::max())
           {
             throw std::overflow_error("");
           }
           top++;
 
-          if (current_r > std::numeric_limits< int >::max() - 1)
+          if (current_r == std::numeric_limits<size_t>::max())
           {
             throw std::overflow_error("");
           }
@@ -153,21 +151,17 @@ namespace segeev
       {
         if (current_r < bottom)
         {
-          if (current_r > std::numeric_limits< int >::max() - 1)
-          {
-            throw std::overflow_error("");
-          }
           current_r++;
         }
         else
         {
-          if (left > std::numeric_limits< int >::max() - 1)
+          if (left == std::numeric_limits<size_t>::max())
           {
             throw std::overflow_error("");
           }
           left++;
 
-          if (current_c > std::numeric_limits< int >::max() - 1)
+          if (current_c == std::numeric_limits<size_t>::max())
           {
             throw std::overflow_error("");
           }
@@ -187,7 +181,7 @@ int main(int argc, char **argv)
 
   if (argc != 4)
   {
-    std::cerr << "Error: Invalid number of arguments.\n" << std::endl;
+    std::cerr << "Error: Invalid number of arguments." << std::endl;
     return ERROR_ARGS;
   }
 
@@ -203,7 +197,7 @@ int main(int argc, char **argv)
   }
   else
   {
-    std::cerr << "Error: Invalid number of arguments.\n" << std::endl;
+    std::cerr << "Error: Invalid number of arguments." << std::endl;
     return ERROR_ARGS;
   }
 
@@ -218,12 +212,17 @@ int main(int argc, char **argv)
   }
 
   size_t rows = 0, cols = 0;
-  if (!(input >> rows >> cols) || rows < 0 || cols < 0)
+  if (!(input >> rows >> cols))
   {
     std::cerr << "Error: File error or corrupted data.\n";
     return ERROR_DATA;
   }
 
+  if (rows > 0 && cols > std::numeric_limits<size_t>::max() / rows)
+  {
+    std::cerr << "Error: File error or corrupted data.\n";
+    return ERROR_DATA;
+  }
   size_t totalElements = rows * cols;
 
   if (totalElements == 0)
@@ -249,7 +248,7 @@ int main(int argc, char **argv)
 
     int staticArray[10000];
 
-    for (int i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < totalElements; ++i)
     {
       if (!(input >> staticArray[i]))
       {
@@ -266,7 +265,7 @@ int main(int argc, char **argv)
     }
     input.close();
 
-    int result9 = 0;
+    size_t result9 = 0;
     try
     {
       result9 = segeev::processVariant9(staticArray, rows, cols);
@@ -287,7 +286,7 @@ int main(int argc, char **argv)
 
     output << result9 << std::endl;
     output << rows << " " << cols;
-    for (int i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < totalElements; ++i)
     {
       output << " " << staticArray[i];
     }
@@ -295,9 +294,14 @@ int main(int argc, char **argv)
   }
   else
   {
-    int *dynamicArray = new int[totalElements];
+    int *dynamicArray = new (std::nothrow) int[totalElements];
+    if (!dynamicArray)
+    {
+      std::cerr << "Error: File error or corrupted data.\n";
+      return ERROR_DATA;
+    }
 
-    for (int i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < totalElements; ++i)
     {
       if (!(input >> dynamicArray[i]))
       {
@@ -316,7 +320,7 @@ int main(int argc, char **argv)
     }
     input.close();
 
-    int result9 = 0;
+    size_t result9 = 0;
     try
     {
       result9 = segeev::processVariant9(dynamicArray, rows, cols);
@@ -339,7 +343,7 @@ int main(int argc, char **argv)
 
     output << result9 << std::endl;
     output << rows << " " << cols;
-    for (int i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < totalElements; ++i)
     {
       output << " " << dynamicArray[i];
     }
