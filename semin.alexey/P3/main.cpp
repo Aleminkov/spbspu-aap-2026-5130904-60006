@@ -3,9 +3,7 @@
 #include <limits>
 #include <stdexcept>
 
-using namespace std;
-
-constexpr unsigned long long kMaxFixedElements = 10000;
+constexpr unsigned long long k_max_fixed_elements = 10000;
 
 bool equals(const char* left, const char* right)
 {
@@ -16,66 +14,75 @@ bool equals(const char* left, const char* right)
   return *left == *right;
 }
 
-unsigned long long readDimension(istream& input)
+unsigned long long read_dimension(std::istream& input)
 {
   char token[32] = {};
   input.width(32);
   if (!(input >> token)) {
     if (input.bad()) {
-      throw runtime_error("Failed to read input file");
+      throw std::runtime_error("Failed to read input file");
     }
-    throw invalid_argument("Missing or invalid matrix dimension");
+    throw std::invalid_argument("Missing or invalid matrix dimension");
   }
 
   unsigned long long value = 0;
   for (int i = 0; token[i] != '\0'; ++i) {
     if (i >= 20) {
-      throw overflow_error("Matrix dimension is too large");
+      throw std::overflow_error("Matrix dimension is too large");
     }
     if (token[i] < '0' || token[i] > '9') {
-      throw invalid_argument("Matrix dimensions must be non-negative integers");
+      throw std::invalid_argument("Matrix dimensions must be non-negative integers");
     }
-    const unsigned long long digit = static_cast< unsigned long long >(token[i] - '0');
-    if (value > (numeric_limits< unsigned long long >::max() - digit) / 10) {
-      throw overflow_error("Matrix dimension is too large");
+    const unsigned long long digit =
+        static_cast<unsigned long long>(token[i] - '0');
+    if (value > (std::numeric_limits<unsigned long long>::max() - digit) / 10) {
+      throw std::overflow_error("Matrix dimension is too large");
     }
     value = value * 10 + digit;
   }
   return value;
 }
 
-void readMatrixHeader(
-    istream& input, unsigned long long& rows, unsigned long long& cols, unsigned long long& elementCount)
+void read_matrix_header(
+    std::istream& input,
+    unsigned long long& rows,
+    unsigned long long& cols,
+    unsigned long long& element_count)
 {
-  rows = readDimension(input);
-  cols = readDimension(input);
+  rows = read_dimension(input);
+  cols = read_dimension(input);
 
   if ((rows == 0) != (cols == 0)) {
-    throw invalid_argument("A matrix must have either two positive dimensions or be 0 by 0");
+    throw std::invalid_argument(
+        "A matrix must have either two positive dimensions or be 0 by 0");
   }
   if (rows == 0) {
-    elementCount = 0;
+    element_count = 0;
     return;
   }
 
-  if (cols > numeric_limits< unsigned long long >::max() / rows) {
-    throw overflow_error("Matrix element count is too large");
+  if (cols > std::numeric_limits<unsigned long long>::max() / rows) {
+    throw std::overflow_error("Matrix element count is too large");
   }
-  elementCount = rows * cols;
-  if (elementCount > numeric_limits< unsigned long long >::max() / sizeof(long long)) {
-    throw overflow_error("Matrix storage size is too large");
+  element_count = rows * cols;
+  if (element_count >
+      std::numeric_limits<unsigned long long>::max() / sizeof(long long)) {
+    throw std::overflow_error("Matrix storage size is too large");
   }
 }
 
-void readMatrixElements(istream& input, unsigned long long elementCount, long long* matrix)
+void read_matrix_elements(
+    std::istream& input,
+    unsigned long long element_count,
+    long long* matrix)
 {
-  for (unsigned long long i = 0; i < elementCount; ++i) {
+  for (unsigned long long i = 0; i < element_count; ++i) {
     int value = 0;
     if (!(input >> value)) {
       if (input.bad()) {
-        throw runtime_error("Failed to read input file");
+        throw std::runtime_error("Failed to read input file");
       }
-      throw invalid_argument("Invalid or incomplete matrix data");
+      throw std::invalid_argument("Invalid or incomplete matrix data");
     }
     matrix[i] = value;
   }
@@ -83,14 +90,17 @@ void readMatrixElements(istream& input, unsigned long long elementCount, long lo
   char extra[2] = {};
   input.width(2);
   if (input >> extra) {
-    throw invalid_argument("Unexpected data after the matrix");
+    throw std::invalid_argument("Unexpected data after the matrix");
   }
   if (input.bad()) {
-    throw runtime_error("Failed to read input file");
+    throw std::runtime_error("Failed to read input file");
   }
 }
 
-void decreaseClockwiseFromTopLeft(long long* matrix, unsigned long long rows, unsigned long long cols)
+void decrease_clockwise_from_top_left(
+    long long* matrix,
+    unsigned long long rows,
+    unsigned long long cols)
 {
   unsigned long long top = 0;
   unsigned long long bottom = rows;
@@ -133,7 +143,11 @@ void decreaseClockwiseFromTopLeft(long long* matrix, unsigned long long rows, un
   }
 }
 
-void writeMatrix(ostream& output, const long long* matrix, unsigned long long rows, unsigned long long cols)
+void write_matrix(
+    std::ostream& output,
+    const long long* matrix,
+    unsigned long long rows,
+    unsigned long long cols)
 {
   output << rows << ' ' << cols;
   for (unsigned long long i = 0; i < rows * cols; ++i) {
@@ -141,130 +155,136 @@ void writeMatrix(ostream& output, const long long* matrix, unsigned long long ro
   }
   output << '\n';
   if (!output) {
-    throw runtime_error("Failed to write output file");
+    throw std::runtime_error("Failed to write output file");
   }
 }
 
-int processMatrix(ostream& output, long long* matrix, unsigned long long rows, unsigned long long cols)
+int process_matrix(
+    std::ostream& output,
+    long long* matrix,
+    unsigned long long rows,
+    unsigned long long cols)
 {
-  decreaseClockwiseFromTopLeft(matrix, rows, cols);
-  writeMatrix(output, matrix, rows, cols);
+  decrease_clockwise_from_top_left(matrix, rows, cols);
+  write_matrix(output, matrix, rows, cols);
   return 0;
 }
 
-int runFixedStorage(istream& input, ostream& output)
+int run_fixed_storage(std::istream& input, std::ostream& output)
 {
-  long long fixedMatrix[kMaxFixedElements] = {};
+  long long fixed_matrix[k_max_fixed_elements] = {};
   unsigned long long rows = 0;
   unsigned long long cols = 0;
-  unsigned long long elementCount = 0;
+  unsigned long long element_count = 0;
 
-  readMatrixHeader(input, rows, cols, elementCount);
-  if (elementCount > kMaxFixedElements) {
-    throw length_error("Matrix exceeds the 10000 element fixed-storage limit");
+  read_matrix_header(input, rows, cols, element_count);
+  if (element_count > k_max_fixed_elements) {
+    throw std::length_error(
+        "Matrix exceeds the 10000 element fixed-storage limit");
   }
-  readMatrixElements(input, elementCount, fixedMatrix);
-  return processMatrix(output, fixedMatrix, rows, cols);
+  read_matrix_elements(input, element_count, fixed_matrix);
+  return process_matrix(output, fixed_matrix, rows, cols);
 }
 
-int runDynamicStorage(istream& input, ostream& output)
+int run_dynamic_storage(std::istream& input, std::ostream& output)
 {
   unsigned long long rows = 0;
   unsigned long long cols = 0;
-  unsigned long long elementCount = 0;
-  readMatrixHeader(input, rows, cols, elementCount);
+  unsigned long long element_count = 0;
+  read_matrix_header(input, rows, cols, element_count);
 
-  long long* dynamicMatrix = 0;
+  long long* dynamic_matrix = nullptr;
   try {
-    if (elementCount != 0) {
-      dynamicMatrix = new long long[elementCount];
+    if (element_count != 0) {
+      dynamic_matrix = new long long[element_count];
     }
-    readMatrixElements(input, elementCount, dynamicMatrix);
-    const int result = processMatrix(output, dynamicMatrix, rows, cols);
-    delete[] dynamicMatrix;
+    read_matrix_elements(input, element_count, dynamic_matrix);
+    const int result =
+        process_matrix(output, dynamic_matrix, rows, cols);
+    delete[] dynamic_matrix;
     return result;
   } catch (...) {
-    delete[] dynamicMatrix;
+    delete[] dynamic_matrix;
     throw;
   }
 }
 
-int runMatrixProgram(int argc, char** argv)
+int run_matrix_program(int argc, char** argv)
 {
   if (argc != 4) {
-    throw invalid_argument("Invalid number of arguments");
+    throw std::invalid_argument("Invalid number of arguments");
   }
 
   if (!equals(argv[1], "1") && !equals(argv[1], "2")) {
-    throw invalid_argument("First parameter must be 1 or 2");
+    throw std::invalid_argument("First parameter must be 1 or 2");
   }
 
-  ifstream input(argv[2]);
+  std::ifstream input(argv[2]);
   if (!input) {
-    throw runtime_error("Cannot open input file");
+    throw std::runtime_error("Cannot open input file");
   }
 
-  ofstream output(argv[3]);
+  std::ofstream output(argv[3]);
   if (!output) {
-    throw runtime_error("Cannot open output file");
+    throw std::runtime_error("Cannot open output file");
   }
 
   try {
     if (equals(argv[1], "1")) {
-      return runFixedStorage(input, output);
+      return run_fixed_storage(input, output);
     }
-    return runDynamicStorage(input, output);
-  } catch (const overflow_error& error) {
-    cerr << error.what() << '\n';
+    return run_dynamic_storage(input, output);
+  } catch (const std::overflow_error& error) {
+    std::cerr << error.what() << '\n';
     return 2;
-  } catch (const runtime_error&) {
+  } catch (const std::runtime_error&) {
     throw;
-  } catch (const exception& error) {
-    cerr << error.what() << '\n';
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << '\n';
     return 2;
   }
 }
 
-int runIntro()
+int run_intro()
 {
-  cout << "semin.alexey\n";
-  if (!cout) {
-    throw runtime_error("Failed to write output");
+  std::cout << "semin.alexey\n";
+  if (!std::cout) {
+    throw std::runtime_error("Failed to write output");
   }
   return 0;
 }
 
-int runSequence()
+int run_sequence()
 {
   int previous = 0;
   int current = 0;
-  int increasingPairs = 0;
-  bool hasPrevious = false;
-  bool hasTerminator = false;
+  int increasing_pairs = 0;
+  bool has_previous = false;
+  bool has_terminator = false;
 
-  while (cin >> current) {
+  while (std::cin >> current) {
     if (current == 0) {
-      hasTerminator = true;
+      has_terminator = true;
       break;
     }
 
-    if (hasPrevious && current > previous) {
-      ++increasingPairs;
+    if (has_previous && current > previous) {
+      ++increasing_pairs;
     }
     previous = current;
-    hasPrevious = true;
+    has_previous = true;
   }
 
-  if (cin.bad()) {
-    throw runtime_error("Failed to read standard input");
+  if (std::cin.bad()) {
+    throw std::runtime_error("Failed to read standard input");
   }
-  if (!hasTerminator) {
-    throw invalid_argument("Expected integers terminated by 0");
+  if (!has_terminator) {
+    throw std::invalid_argument("Expected integers terminated by 0");
   }
 
-  cout << increasingPairs << '\n';
-  if (!cout) {
-    throw runtime_error("Failed to write output");
+  std::cout << increasing_pairs << '\n';
+  if (!std::cout) {
+    throw std::runtime_error("Failed to write output");
   }
   return 0;
 }
@@ -273,24 +293,23 @@ int main(int argc, char** argv)
 {
   try {
     if (argc == 1) {
-      return runIntro();
+      return run_intro();
     }
     if (argc == 2 && equals(argv[1], "sequence")) {
-      return runSequence();
+      return run_sequence();
     }
-    return runMatrixProgram(argc, argv);
-  } catch (const invalid_argument& error) {
-    cerr << error.what() << '\n';
+    return run_matrix_program(argc, argv);
+  } catch (const std::invalid_argument& error) {
+    std::cerr << error.what() << '\n';
     return 1;
-  } catch (const overflow_error& error) {
-    cerr << error.what() << '\n';
+  } catch (const std::overflow_error& error) {
+    std::cerr << error.what() << '\n';
     return 1;
-  } catch (const runtime_error& error) {
-    cerr << error.what() << '\n';
+  } catch (const std::runtime_error& error) {
+    std::cerr << error.what() << '\n';
     return 1;
-  } catch (const exception& error) {
-    cerr << error.what() << '\n';
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << '\n';
     return 1;
   }
 }
-
