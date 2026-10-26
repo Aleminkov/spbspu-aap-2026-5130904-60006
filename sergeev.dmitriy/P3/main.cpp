@@ -304,7 +304,7 @@ int main(const int argc, const char *const *const argv)
     {
       dynamic_array = new int[total_elements];
     }
-    catch (const std::bad_alloc &)
+    catch (...)
     {
       std::cerr << "Error: File error or corrupted data.\n";
       return ERROR_DATA;
