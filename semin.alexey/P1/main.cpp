@@ -2,14 +2,14 @@
 
 int main()
 {
-  int number;
+  int number = 0;
   int previous = 0;
 
-  int countDec = 0;
-  int maxDec = 0;
+  int count_dec = 0;
+  int max_dec = 0;
 
-  int countEven = 0;
-  int maxEven = 0;
+  int count_even = 0;
+  int max_even = 0;
 
   while (true)
   {
@@ -24,39 +24,39 @@ int main()
       break;
     }
 
-    if (countDec == 0 || number > previous)
+    if (count_dec == 0 || number > previous)
     {
-      countDec = 1;
+      count_dec = 1;
     }
     else
     {
-      countDec++;
+      count_dec++;
     }
 
-    if (countDec > maxDec)
+    if (count_dec > max_dec)
     {
-      maxDec = countDec;
+      max_dec = count_dec;
     }
 
     if (number % 2 == 0)
     {
-      countEven++;
+      count_even++;
 
-      if (countEven > maxEven)
+      if (count_even > max_even)
       {
-        maxEven = countEven;
+        max_even = count_even;
       }
     }
     else
     {
-      countEven = 0;
+      count_even = 0;
     }
 
     previous = number;
   }
 
-  std::cout << maxDec << '\n';
-  std::cout << maxEven << '\n';
+  std::cout << max_dec << '\n';
+  std::cout << max_even << '\n';
 
   return 0;
 }
