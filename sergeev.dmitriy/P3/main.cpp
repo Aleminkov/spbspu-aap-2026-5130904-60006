@@ -2,10 +2,11 @@
 #include <limits>
 #include <fstream>
 #include <stdexcept>
+#include <cstddef>
 
 namespace segeev
 {
-  size_t processVariant9(const int *matrix, size_t rows, size_t cols)
+  size_t processVariant9(const int *matrix, const size_t rows, const size_t cols)
   {
     if (rows <= 1)
     {
@@ -37,16 +38,18 @@ namespace segeev
     return non_repeating_columns_count;
   }
 
-  void processVariant6(int *matrix, size_t rows, size_t cols)
+  void processVariant6(int *matrix, const size_t rows, const size_t cols)
   {
     if (rows > 0 && cols > std::numeric_limits< size_t >::max() / rows)
     {
       throw std::overflow_error("");
     }
-    size_t total_elements = rows * cols;
+    const size_t total_elements = rows * cols;
 
-    size_t top = 0, bottom = rows - 1;
-    size_t left = 0, right = cols - 1;
+    size_t top = 0;
+    size_t bottom = rows - 1;
+    size_t left = 0;
+    size_t right = cols - 1;
 
     size_t current_r = bottom;
     size_t current_c = left;
@@ -58,18 +61,18 @@ namespace segeev
       {
         throw std::overflow_error("");
       }
-      size_t row_offset = current_r * cols;
+      const size_t row_offset = current_r * cols;
 
       if (row_offset > 0 && current_c > std::numeric_limits< size_t >::max() - row_offset)
       {
         throw std::overflow_error("");
       }
-      size_t index = row_offset + current_c;
+      const size_t index = row_offset + current_c;
       if (step > static_cast< size_t >(std::numeric_limits< int >::max()))
       {
         throw std::overflow_error("");
       }
-      int int_step = static_cast< int >(step);
+      const int int_step = static_cast< int >(step);
 
       if (matrix[index] > 0 && int_step > std::numeric_limits< int >::max() - matrix[index])
       {
@@ -173,11 +176,12 @@ namespace segeev
   }
 }
 
-int main(int argc, char **argv)
+int main(const int argc, const char * const * const argv)
 {
   const int SUCCESS = 0;
   const int ERROR_ARGS = 1;
   const int ERROR_DATA = 2;
+  const size_t STATIC_LIMIT = 10000;
 
   if (argc != 4)
   {
@@ -201,8 +205,8 @@ int main(int argc, char **argv)
     return ERROR_ARGS;
   }
 
-  const char *input_path = argv[2];
-  const char *output_path = argv[3];
+  const char * const input_path = argv[2];
+  const char * const output_path = argv[3];
 
   std::ifstream input{input_path};
   if (!input)
@@ -211,7 +215,8 @@ int main(int argc, char **argv)
     return ERROR_DATA;
   }
 
-  size_t rows = 0, cols = 0;
+  size_t rows = 0;
+  size_t cols = 0;
   if (!(input >> rows >> cols))
   {
     std::cerr << "Error: File error or corrupted data.\n";
@@ -223,7 +228,7 @@ int main(int argc, char **argv)
     std::cerr << "Error: File error or corrupted data.\n";
     return ERROR_DATA;
   }
-  size_t total_elements = rows * cols;
+  const size_t total_elements = rows * cols;
 
   if (total_elements == 0)
   {
@@ -240,13 +245,13 @@ int main(int argc, char **argv)
 
   if (num == 1)
   {
-    if (total_elements > 10000)
+    if (total_elements > STATIC_LIMIT)
     {
       std::cerr << "Error: File error or corrupted data.\n";
       return ERROR_DATA;
     }
 
-    int static_array[10000];
+    int static_array[STATIC_LIMIT];
 
     for (size_t i = 0; i < total_elements; ++i)
     {
@@ -294,8 +299,12 @@ int main(int argc, char **argv)
   }
   else
   {
-    int *dynamic_array = new (std::nothrow) int[total_elements];
-    if (!dynamic_array)
+    int * dynamic_array = nullptr;
+    try
+    {
+      dynamic_array = new int[total_elements];
+    }
+    catch (const std::bad_alloc &)
     {
       std::cerr << "Error: File error or corrupted data.\n";
       return ERROR_DATA;
