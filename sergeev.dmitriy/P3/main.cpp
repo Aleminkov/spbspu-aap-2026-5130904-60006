@@ -12,29 +12,29 @@ namespace segeev
       return cols;
     }
 
-    size_t nonRepeatingColumnsCount = 0;
+    size_t non_repeating_columns_count = 0;
 
     for (size_t i = 0; i < cols; ++i)
     {
-      bool hasDuplicates = false;
+      bool has_duplicates = false;
       for (size_t j = 0; j < rows - 1; ++j)
       {
         if (matrix[j * cols + i] == matrix[(j + 1) * cols + i])
         {
-          hasDuplicates = true;
+          has_duplicates = true;
           break;
         }
       }
-      if (!hasDuplicates)
+      if (!has_duplicates)
       {
-        if (nonRepeatingColumnsCount == std::numeric_limits< size_t >::max())
+        if (non_repeating_columns_count == std::numeric_limits< size_t >::max())
         {
           throw std::overflow_error("");
         }
-        nonRepeatingColumnsCount++;
+        non_repeating_columns_count++;
       }
     }
-    return nonRepeatingColumnsCount;
+    return non_repeating_columns_count;
   }
 
   void processVariant6(int *matrix, size_t rows, size_t cols)
@@ -43,7 +43,7 @@ namespace segeev
     {
       throw std::overflow_error("");
     }
-    size_t totalElements = rows * cols;
+    size_t total_elements = rows * cols;
 
     size_t top = 0, bottom = rows - 1;
     size_t left = 0, right = cols - 1;
@@ -52,7 +52,7 @@ namespace segeev
     size_t current_c = left;
     int direction = 0;
 
-    for (size_t step = 1; step <= totalElements; ++step)
+    for (size_t step = 1; step <= total_elements; ++step)
     {
       if (current_r > 0 && cols > 0 && current_r > std::numeric_limits< size_t >::max() / cols)
       {
@@ -201,10 +201,10 @@ int main(int argc, char **argv)
     return ERROR_ARGS;
   }
 
-  const char *inputPath = argv[2];
-  const char *outputPath = argv[3];
+  const char *input_path = argv[2];
+  const char *output_path = argv[3];
 
-  std::ifstream input{inputPath};
+  std::ifstream input{input_path};
   if (!input)
   {
     std::cerr << "Error: File error or corrupted data.\n";
@@ -223,11 +223,11 @@ int main(int argc, char **argv)
     std::cerr << "Error: File error or corrupted data.\n";
     return ERROR_DATA;
   }
-  size_t totalElements = rows * cols;
+  size_t total_elements = rows * cols;
 
-  if (totalElements == 0)
+  if (total_elements == 0)
   {
-    std::ofstream output{outputPath};
+    std::ofstream output{output_path};
     if (!output)
     {
       std::cerr << "Error: File error or corrupted data.\n";
@@ -240,17 +240,17 @@ int main(int argc, char **argv)
 
   if (num == 1)
   {
-    if (totalElements > 10000)
+    if (total_elements > 10000)
     {
       std::cerr << "Error: File error or corrupted data.\n";
       return ERROR_DATA;
     }
 
-    int staticArray[10000];
+    int static_array[10000];
 
-    for (size_t i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < total_elements; ++i)
     {
-      if (!(input >> staticArray[i]))
+      if (!(input >> static_array[i]))
       {
         std::cerr << "Error: File error or corrupted data.\n";
         return ERROR_DATA;
@@ -268,8 +268,8 @@ int main(int argc, char **argv)
     size_t result9 = 0;
     try
     {
-      result9 = segeev::processVariant9(staticArray, rows, cols);
-      segeev::processVariant6(staticArray, rows, cols);
+      result9 = segeev::processVariant9(static_array, rows, cols);
+      segeev::processVariant6(static_array, rows, cols);
     }
     catch (const std::overflow_error &)
     {
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
       return ERROR_DATA;
     }
 
-    std::ofstream output{outputPath};
+    std::ofstream output{output_path};
     if (!output)
     {
       std::cerr << "Error: File error or corrupted data.\n";
@@ -286,27 +286,27 @@ int main(int argc, char **argv)
 
     output << result9 << std::endl;
     output << rows << " " << cols;
-    for (size_t i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < total_elements; ++i)
     {
-      output << " " << staticArray[i];
+      output << " " << static_array[i];
     }
     output << std::endl;
   }
   else
   {
-    int *dynamicArray = new (std::nothrow) int[totalElements];
-    if (!dynamicArray)
+    int *dynamic_array = new (std::nothrow) int[total_elements];
+    if (!dynamic_array)
     {
       std::cerr << "Error: File error or corrupted data.\n";
       return ERROR_DATA;
     }
 
-    for (size_t i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < total_elements; ++i)
     {
-      if (!(input >> dynamicArray[i]))
+      if (!(input >> dynamic_array[i]))
       {
         std::cerr << "Error: File error or corrupted data.\n";
-        delete[] dynamicArray;
+        delete[] dynamic_array;
         return ERROR_DATA;
       }
     }
@@ -315,7 +315,7 @@ int main(int argc, char **argv)
     if (input >> extra)
     {
       std::cerr << "Error: File error or corrupted data.\n";
-      delete[] dynamicArray;
+      delete[] dynamic_array;
       return ERROR_DATA;
     }
     input.close();
@@ -323,33 +323,33 @@ int main(int argc, char **argv)
     size_t result9 = 0;
     try
     {
-      result9 = segeev::processVariant9(dynamicArray, rows, cols);
-      segeev::processVariant6(dynamicArray, rows, cols);
+      result9 = segeev::processVariant9(dynamic_array, rows, cols);
+      segeev::processVariant6(dynamic_array, rows, cols);
     }
     catch (const std::overflow_error &)
     {
       std::cerr << "Error: File error or corrupted data.\n";
-      delete[] dynamicArray;
+      delete[] dynamic_array;
       return ERROR_DATA;
     }
 
-    std::ofstream output{outputPath};
+    std::ofstream output{output_path};
     if (!output)
     {
       std::cerr << "Error: File error or corrupted data.\n";
-      delete[] dynamicArray;
+      delete[] dynamic_array;
       return ERROR_DATA;
     }
 
     output << result9 << std::endl;
     output << rows << " " << cols;
-    for (size_t i = 0; i < totalElements; ++i)
+    for (size_t i = 0; i < total_elements; ++i)
     {
-      output << " " << dynamicArray[i];
+      output << " " << dynamic_array[i];
     }
     output << std::endl;
 
-    delete[] dynamicArray;
+    delete[] dynamic_array;
   }
 
   return SUCCESS;
