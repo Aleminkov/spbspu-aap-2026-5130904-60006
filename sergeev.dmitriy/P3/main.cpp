@@ -176,7 +176,7 @@ namespace segeev
   }
 }
 
-int main(const int argc, const char * const * const argv)
+int main(const int argc, const char *const *const argv)
 {
   const int SUCCESS = 0;
   const int ERROR_ARGS = 1;
@@ -205,8 +205,8 @@ int main(const int argc, const char * const * const argv)
     return ERROR_ARGS;
   }
 
-  const char * const input_path = argv[2];
-  const char * const output_path = argv[3];
+  const char *const input_path = argv[2];
+  const char *const output_path = argv[3];
 
   std::ifstream input{input_path};
   if (!input)
@@ -299,7 +299,7 @@ int main(const int argc, const char * const * const argv)
   }
   else
   {
-    int * dynamic_array = nullptr;
+    int *dynamic_array = nullptr;
     try
     {
       dynamic_array = new int[total_elements];
