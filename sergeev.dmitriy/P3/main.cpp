@@ -311,7 +311,7 @@ int main(int argc, char **argv)
       }
     }
 
-    int extra;
+    int extra = 0;
     if (input >> extra)
     {
       std::cerr << "Error: File error or corrupted data.\n";
