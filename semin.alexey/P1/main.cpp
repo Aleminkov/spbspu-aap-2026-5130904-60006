@@ -1,62 +1,69 @@
 #include <iostream>
+#include <limits>
+#include <stdexcept>
 
-int main()
-{
-  int number = 0;
-  int previous = 0;
+using namespace std;
 
-  int count_dec = 0;
-  int max_dec = 0;
-
-  int count_even = 0;
-  int max_even = 0;
-
-  while (true)
-  {
-    if (!(std::cin >> number))
-    {
-      std::cerr << "Ошибка ввода" << '\n';
-      return 1;
+void incrementCounter(int& counter) {
+    if (counter == numeric_limits<int>::max()) {
+        throw overflow_error("Переполнение счетчика");
     }
 
-    if (number == 0)
-    {
-      break;
+    counter++;
+}
+
+int main() {
+    constexpr int error_code = 1;
+
+    int number = 0;
+    int previous = 0;
+
+    int count_dec = 0;
+    int max_dec = 0;
+
+    int count_even = 0;
+    int max_even = 0;
+
+    try {
+        while (cin >> number) {
+            if (number == 0) {
+                break;
+            }
+
+            if (count_dec == 0 || number > previous) {
+                count_dec = 1;
+            } else {
+                incrementCounter(count_dec);
+            }
+
+            if (count_dec > max_dec) {
+                max_dec = count_dec;
+            }
+
+            if (number % 2 == 0) {
+                incrementCounter(count_even);
+
+                if (count_even > max_even) {
+                    max_even = count_even;
+                }
+            } else {
+                count_even = 0;
+            }
+
+            previous = number;
+        }
+    } catch (const overflow_error& error) {
+        cerr << error.what() << '\n';
+        return error_code;
     }
 
-    if (count_dec == 0 || number > previous)
-    {
-      count_dec = 1;
-    }
-    else
-    {
-      count_dec++;
+    if (!cin) {
+        cerr << "Ошибка ввода" << '\n';
+        return error_code;
     }
 
-    if (count_dec > max_dec)
-    {
-      max_dec = count_dec;
-    }
+    cout << max_dec << '\n';
+    cout << max_even << '\n';
 
-    if (number % 2 == 0)
-    {
-      count_even++;
-
-      if (count_even > max_even)
-      {
-        max_even = count_even;
-      }
-    }
-    else
-    {
-      count_even = 0;
-    }
-
-    previous = number;
-  }
-
-  std::cout << max_dec << '\n';
-  std::cout << max_even << '\n';
-
-  return 0;
+    return 0;
 }
