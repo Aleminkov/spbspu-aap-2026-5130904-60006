@@ -1,8 +1,8 @@
 #include <iostream>
 #include <limits>
 namespace repina {
-constexpr int inputErrorCode = 1;
-constexpr int errorSum = 2;
+  constexpr int inputErrorCode = 1;
+  constexpr int errorSum = 2;
 }
 int main()
 {
