@@ -7,7 +7,8 @@ namespace bondarenko {
 
   const ull ullmax = std::numeric_limits< ull >::max();
 
-  void problemA(int &n, int &max, ull &a_count, bool &is_over_flow_a) {
+  void problemA(int &n, int &max, ull &a_count, bool &is_over_flow_a)
+  {
     if (n > max) {
       max = n;
       a_count = 0;
@@ -20,7 +21,8 @@ namespace bondarenko {
     }
   }
 
-  void problemB(ull &count, int &cur, int &n, ull &b_count, ull &b_max, bool &is_over_flow_b) {
+  void problemB(ull &count, int &cur, int &n, ull &b_count, ull &b_max, bool &is_over_flow_b)
+  {
     if (count == 0) {
       cur = n;
       b_count = b_max = 1;
@@ -40,7 +42,8 @@ namespace bondarenko {
   }
 }
 
-int main() {
+int main()
+{
   int max = std::numeric_limits< int >::min();
 
   bondarenko::ull count = 0, a_count = 0, b_count = 0, b_max = 0;
