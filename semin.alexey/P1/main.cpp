@@ -26,37 +26,52 @@ int main()
   int count_even = 0;
   int max_even = 0;
 
-  try {
-    while (cin >> number) {
-      if (number == 0) {
-        break;
-      }
+  bool overflowed = false;
+  bool dec_overflowed = false;
+  bool even_overflowed = false;
 
-      if (count_dec == 0 || number > previous) {
-        count_dec = 1;
-      } else {
-        incrementCounter(count_dec);
-      }
-
-      if (count_dec > max_dec) {
-        max_dec = count_dec;
-      }
-
-      if (number % 2 == 0) {
-        incrementCounter(count_even);
-
-        if (count_even > max_even) {
-          max_even = count_even;
-        }
-      } else {
-        count_even = 0;
-      }
-
-      previous = number;
+  while (cin >> number) {
+    if (number == 0) {
+      break;
     }
-  } catch (const overflow_error & error) {
-    cerr << error.what() << '\n';
-    return error_code;
+
+    if (count_dec == 0 || number > previous) {
+      count_dec = 1;
+      dec_overflowed = false;
+    } else if (!dec_overflowed) {
+      try {
+        incrementCounter(count_dec);
+      } catch (const overflow_error & error) {
+        cerr << error.what() << '\n';
+        overflowed = true;
+        dec_overflowed = true;
+      }
+    }
+
+    if (count_dec > max_dec) {
+      max_dec = count_dec;
+    }
+
+    if (number % 2 == 0) {
+      if (!even_overflowed) {
+        try {
+          incrementCounter(count_even);
+        } catch (const overflow_error & error) {
+          cerr << error.what() << '\n';
+          overflowed = true;
+          even_overflowed = true;
+        }
+      }
+
+      if (count_even > max_even) {
+        max_even = count_even;
+      }
+    } else {
+      count_even = 0;
+      even_overflowed = false;
+    }
+
+    previous = number;
   }
 
   if (!cin) {
@@ -67,5 +82,5 @@ int main()
   cout << max_dec << '\n';
   cout << max_even << '\n';
 
-  return 0;
+  return overflowed ? error_code : 0;
 }
