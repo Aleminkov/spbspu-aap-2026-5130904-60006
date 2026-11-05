@@ -2,5 +2,5 @@
 
 int main()
 {
-  std::cout << "piri.pirmuhammet\n";
+  std::cout << "nurmedov.pirmuhammet\n";
 }
