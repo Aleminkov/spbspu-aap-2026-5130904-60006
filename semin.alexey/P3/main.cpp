@@ -6,6 +6,7 @@
 #include <new>
 #include <stdexcept>
 
+
 int main(int argc, char** argv)
 {
   const int err_args = 1;
