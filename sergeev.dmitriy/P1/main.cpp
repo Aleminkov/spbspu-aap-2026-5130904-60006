@@ -49,9 +49,12 @@ int main()
   {
     if (count_16 > std::numeric_limits< int >::max() - 1)
     {
-      is_overflow_16 = false;
+      is_overflow_16 = true;
     }
-    count_16++;
+    else
+    {
+      count_16++;
+    }
   }
 
   while (std::cin >> next)
@@ -65,9 +68,12 @@ int main()
     {
       if (count_10 > std::numeric_limits< int >::max() - 1)
       {
-        is_overflow_10 = false;
+        is_overflow_10 = true;
       }
-      count_10++;
+      else
+      {
+        count_10++;
+      }
     }
 
     if (next < min)
@@ -79,9 +85,12 @@ int main()
     {
       if (count_16 > std::numeric_limits< int >::max() - 1)
       {
-        is_overflow_16 = false;
+        is_overflow_16 = true;
       }
-      count_16++;
+      else
+      {
+        count_16++;
+      }
     }
 
     previous = current;
