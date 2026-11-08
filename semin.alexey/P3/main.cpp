@@ -35,24 +35,27 @@ int main(int argc, char** argv)
 
   long long row_count = 0;
   long long column_count = 0;
-  if (!(input >> row_count >> column_count) || row_count < 0 ||
-      column_count < 0 || ((row_count == 0) != (column_count == 0)))
+  if (!(input >> row_count >> column_count)
+      || row_count < 0
+      || column_count < 0
+      || ((row_count == 0) != (column_count == 0)))
   {
     std::cerr << "Неверные размеры матрицы во входном файле\n";
     return err_data;
   }
 
-  const unsigned long long max_size = static_cast<unsigned long long>(std::numeric_limits<std::size_t>::max());
-  if (static_cast<unsigned long long>(row_count) > max_size ||
-      static_cast<unsigned long long>(column_count) > max_size)
+  const unsigned long long max_size =
+      static_cast< unsigned long long >(std::numeric_limits< std::size_t >::max());
+  if (static_cast< unsigned long long >(row_count) > max_size
+      || static_cast< unsigned long long >(column_count) > max_size)
   {
     std::cerr << "Переполнение размеров матрицы\n";
     return err_data;
   }
 
-  const std::size_t rows = static_cast<std::size_t>(row_count);
-  const std::size_t cols = static_cast<std::size_t>(column_count);
-  if (rows > 0 && cols > std::numeric_limits<std::size_t>::max() / rows)
+  const std::size_t rows = static_cast< std::size_t >(row_count);
+  const std::size_t cols = static_cast< std::size_t >(column_count);
+  if (rows > 0 && cols > std::numeric_limits< std::size_t >::max() / rows)
   {
     std::cerr << "Переполнение размеров матрицы\n";
     return err_data;
@@ -64,10 +67,10 @@ int main(int argc, char** argv)
     std::cerr << "Размер матрицы превышает лимит для статического массива\n";
     return err_data;
   }
-  if (total > std::numeric_limits<std::size_t>::max() / sizeof(int) ||
-      cols > std::numeric_limits<std::size_t>::max() / sizeof(int) ||
-      static_cast<unsigned long long>(total) >
-          static_cast<unsigned long long>(std::numeric_limits<long long>::max()))
+  if (total > std::numeric_limits< std::size_t >::max() / sizeof(int)
+      || cols > std::numeric_limits< std::size_t >::max() / sizeof(int)
+      || static_cast< unsigned long long >(total)
+          > static_cast< unsigned long long >(std::numeric_limits< long long >::max()))
   {
     std::cerr << "Переполнение размеров матрицы\n";
     return err_data;
@@ -177,40 +180,42 @@ int main(int argc, char** argv)
 
       for (std::size_t index = 0; index < total; ++index)
       {
-        const long long step = static_cast<long long>(index) + 1;
-        const std::size_t matrix_index = static_cast<std::size_t>(row) * cols + static_cast<std::size_t>(column);
+        const long long step = static_cast< long long >(index) + 1;
+        const std::size_t matrix_row = static_cast< std::size_t >(row);
+        const std::size_t matrix_column = static_cast< std::size_t >(column);
+        const std::size_t matrix_index = matrix_row * cols + matrix_column;
         const long long value = matrix[matrix_index];
-        const long long min_value = std::numeric_limits<int>::min();
+        const long long min_value = std::numeric_limits< int >::min();
         if (step > value - min_value)
         {
           throw std::overflow_error("Переполнение при изменении элемента матрицы");
         }
-        matrix[matrix_index] = static_cast<int>(value - step);
+        matrix[matrix_index] = static_cast< int >(value - step);
 
         if (index + 1 == total)
         {
           break;
         }
 
-        if (column_direction == 1 && static_cast<std::size_t>(column) == right)
+        if (column_direction == 1 && static_cast< std::size_t >(column) == right)
         {
           ++top;
           row_direction = 1;
           column_direction = 0;
         }
-        else if (row_direction == 1 && static_cast<std::size_t>(row) == bottom)
+        else if (row_direction == 1 && static_cast< std::size_t >(row) == bottom)
         {
           --right;
           row_direction = 0;
           column_direction = -1;
         }
-        else if (column_direction == -1 && static_cast<std::size_t>(column) == left)
+        else if (column_direction == -1 && static_cast< std::size_t >(column) == left)
         {
           --bottom;
           row_direction = -1;
           column_direction = 0;
         }
-        else if (row_direction == -1 && static_cast<std::size_t>(row) == top)
+        else if (row_direction == -1 && static_cast< std::size_t >(row) == top)
         {
           ++left;
           row_direction = 0;
