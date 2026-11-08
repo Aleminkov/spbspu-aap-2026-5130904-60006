@@ -35,17 +35,14 @@ int main(int argc, char** argv)
 
   long long row_count = 0;
   long long column_count = 0;
-  if (!(input >> row_count >> column_count)
-      || row_count < 0
-      || column_count < 0
+  if (!(input >> row_count >> column_count) || row_count < 0 || column_count < 0
       || ((row_count == 0) != (column_count == 0)))
   {
     std::cerr << "Неверные размеры матрицы во входном файле\n";
     return err_data;
   }
 
-  const unsigned long long max_size =
-      static_cast< unsigned long long >(std::numeric_limits< std::size_t >::max());
+  const unsigned long long max_size = static_cast< unsigned long long >(std::numeric_limits< std::size_t >::max());
   if (static_cast< unsigned long long >(row_count) > max_size
       || static_cast< unsigned long long >(column_count) > max_size)
   {
