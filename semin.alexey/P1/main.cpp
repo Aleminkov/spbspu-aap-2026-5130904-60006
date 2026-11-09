@@ -80,7 +80,7 @@ int main()
   }
 
   if(overflowed){
-    return error_code
+    return error_code;
   }
 
   cout << max_dec << '\n';
