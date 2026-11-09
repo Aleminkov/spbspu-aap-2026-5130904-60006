@@ -3,6 +3,7 @@
 #include <iostream>
 #include <limits>
 
+// Variant 18: remove English vowels. Initial buffer capacity: 10.
 void removeVowels(char* text) noexcept
 {
   std::size_t source_index = 0;
@@ -32,7 +33,12 @@ int main()
 
   std::size_t length = 0;
   char character = '\0';
-  while (std::cin.get(character) && character != '\n') {
+  bool has_input = false;
+  while (std::cin.get(character)) {
+    has_input = true;
+    if (character == '\n') {
+      break;
+    }
     if (length >= capacity - 1) {
       if (capacity > std::numeric_limits< std::size_t >::max() / 2) {
         delete[] text;
@@ -62,6 +68,11 @@ int main()
   if (std::cin.bad() || (!std::cin.eof() && std::cin.fail())) {
     delete[] text;
     std::cerr << "input error\n";
+    return 1;
+  }
+  if (!has_input) {
+    delete[] text;
+    std::cerr << "no input\n";
     return 1;
   }
 
