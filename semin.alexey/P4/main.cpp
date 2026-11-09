@@ -5,20 +5,18 @@
 
 void removeVowels(char* text) noexcept
 {
-  std::size_t sourceIndex = 0;
-  std::size_t targetIndex = 0;
-  while (text[sourceIndex] != '\0') {
-    const unsigned char character =
-      static_cast<unsigned char>(text[sourceIndex]);
+  std::size_t source_index = 0;
+  std::size_t target_index = 0;
+  while (text[source_index] != '\0') {
+    const unsigned char character = static_cast< unsigned char >(text[source_index]);
     const int lowercase = std::tolower(character);
-    if (lowercase != 'a' && lowercase != 'e' && lowercase != 'i' &&
-        lowercase != 'o' && lowercase != 'u') {
-      text[targetIndex] = text[sourceIndex];
-      ++targetIndex;
+    if (lowercase != 'a' && lowercase != 'e' && lowercase != 'i' && lowercase != 'o' && lowercase != 'u') {
+      text[target_index] = text[source_index];
+      ++target_index;
     }
-    ++sourceIndex;
+    ++source_index;
   }
-  text[targetIndex] = '\0';
+  text[target_index] = '\0';
 }
 
 int main()
@@ -36,26 +34,26 @@ int main()
   char character = '\0';
   while (std::cin.get(character) && character != '\n') {
     if (length >= capacity - 1) {
-      if (capacity > std::numeric_limits<std::size_t>::max() / 2) {
+      if (capacity > std::numeric_limits< std::size_t >::max() / 2) {
         delete[] text;
         std::cerr << "memory allocation error\n";
         return 1;
       }
-      const std::size_t newCapacity = capacity * 2;
-      char* newText = nullptr;
+      const std::size_t new_capacity = capacity * 2;
+      char* new_text = nullptr;
       try {
-        newText = new char[newCapacity];
+        new_text = new char[new_capacity];
       } catch (...) {
         delete[] text;
         std::cerr << "memory allocation error\n";
         return 1;
       }
       for (std::size_t index = 0; index < length; ++index) {
-        newText[index] = text[index];
+        new_text[index] = text[index];
       }
       delete[] text;
-      text = newText;
-      capacity = newCapacity;
+      text = new_text;
+      capacity = new_capacity;
     }
     text[length] = character;
     ++length;
