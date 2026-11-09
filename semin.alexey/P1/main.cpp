@@ -79,8 +79,12 @@ int main()
     return error_code;
   }
 
+  if(overflowed){
+    return error_code
+  }
+
   cout << max_dec << '\n';
   cout << max_even << '\n';
 
-  return overflowed ? error_code : 0;
+  return 0;
 }
