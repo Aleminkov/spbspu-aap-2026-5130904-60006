@@ -79,7 +79,7 @@ int main()
     return error_code;
   }
 
-  if(overflowed) {
+  if (overflowed) {
     return error_code;
   }
 
