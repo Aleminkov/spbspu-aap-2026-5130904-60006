@@ -3,7 +3,6 @@
 #include <iostream>
 #include <limits>
 
-// Variant 18: remove English vowels. Initial buffer capacity: 10.
 void removeVowels(char* text) noexcept
 {
   std::size_t source_index = 0;
