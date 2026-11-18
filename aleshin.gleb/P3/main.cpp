@@ -9,6 +9,7 @@ namespace aleshin {
   constexpr int success = 0;
   constexpr int argsError = 1;
   constexpr int inputError = 2;
+  constexpr int expectedArgsCount = 4;
   constexpr std::size_t maxSize = 10000;
 
   bool parseMode(const char* arg, int& mode)
@@ -115,6 +116,10 @@ namespace aleshin {
       std::cerr << "Error: input file does not contain enough valid matrix elements\n";
       return inputError;
     }
+    if (hasExtraData(input)) {
+      std::cerr << "Error: input file contains extra dsta after the matrix\n";
+      return inputError;
+    }
     output << maxSumParallelToMain(data, rows, cols) << '\n';
     output << std::boolalpha << isUpperTriangular(data, rows, cols) << '\n';
     if (!output) {
@@ -149,7 +154,7 @@ namespace aleshin {
 
   int runApplication(int argc, char** argv)
   {
-    if (argc != 4) {
+    if (argc != expectedArgsCount) {
       std::cerr << "Error: usage: ./lab num input output\n";
       return argsError;
     }
