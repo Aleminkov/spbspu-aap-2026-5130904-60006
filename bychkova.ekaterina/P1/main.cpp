@@ -1,6 +1,11 @@
 #include <iostream>
 #include <limits>
 
+namespace bychkova {
+constexpr int inputErrorCode = 1;
+constexpr int errorSum = 2;
+}
+
 int main()
 {
   int current_value = 0;
@@ -12,26 +17,17 @@ int main()
   int max_run_length = 0;
   int sign_changes = 0;
 
-  while (true) {
-    if (!(std::cin >> current_value)) {
-      std::cerr << "Error: Invalid input data or missing zero terminator." << std::endl;
-      return 1;
-    }
-
-    if (current_value == 0) {
-      break;
-    }
-
+  while (std::cin >> current_value && current_value != 0) {
     if (value_count == std::numeric_limits< int >::max()) {
       std::cerr << "Error: Input sequence is too long." << std::endl;
-      return 2;
+      return bychkova::errorSum;
     }
     ++value_count;
 
     if (current_value >= previous_value) {
       if (current_run_length == std::numeric_limits< int >::max()) {
         std::cerr << "Error: Increasing fragment is too long." << std::endl;
-        return 2;
+        return bychkova::errorSum;
       }
       ++current_run_length;
     } else {
@@ -45,13 +41,18 @@ int main()
     if (last_non_zero != 0 && ((last_non_zero < 0 && current_value > 0) || (last_non_zero > 0 && current_value < 0))) {
       if (sign_changes == std::numeric_limits< int >::max()) {
         std::cerr << "Error: Too many sign changes." << std::endl;
-        return 2;
+        return bychkova::errorSum;
       }
       ++sign_changes;
     }
 
     previous_value = current_value;
     last_non_zero = current_value;
+  }
+
+  if (!std::cin) {
+    std::cerr << "Error: Invalid input data or missing zero terminator." << std::endl;
+    return bychkova::inputErrorCode;
   }
 
   std::cout << max_run_length << std::endl;
