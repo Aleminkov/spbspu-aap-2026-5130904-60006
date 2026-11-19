@@ -1,10 +1,11 @@
 #include <iostream>
 #include <cstddef>
+#include <limits>
 
 namespace braterskaia
 {
   const int ERR_INPUT = 1;
-  const std::size_t MAX_SZ = std::size_t(-1);
+  const std::size_t MAX_SZ = std::numeric_limits<std::size_t>::max();
 }
 
 int main()
@@ -38,6 +39,7 @@ int main()
       {
         std::cerr << "Error: overflow detected\n";
         has_error = true;
+        break;
       }
 
       ++inc_cnt;
@@ -56,7 +58,7 @@ int main()
     prev = curr;
   }
 
-  if (!std::cin && !std::cin.eof())
+  if (!std::cin)
   {
     std::cerr << "Error: invalid input\n";
     has_error = true;
@@ -71,15 +73,11 @@ int main()
   if (has_error)
   {
     std::cout << "Error" << '\n';
-    std::cout << "Error" << '\n';
-
     return braterskaia::ERR_INPUT;
   }
-  else
-  {
-    std::cout << max_inc << '\n';
-    std::cout << inc_cnt << '\n';
-  }
+
+  std::cout << max_inc << '\n';
+  std::cout << inc_cnt << '\n';
 
   return 0;
 }
