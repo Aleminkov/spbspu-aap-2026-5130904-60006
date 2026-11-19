@@ -181,7 +181,7 @@ int main(const int argc, const char *const *const argv)
   const int SUCCESS = 0;
   const int ERROR_ARGS = 1;
   const int ERROR_DATA = 2;
-  const int ARGC_COUNT = 2;
+  const int ARGC_COUNT = 4;
   const int MODE_STATIC = 1;
   const int MODE_DYNAMIC = 2;
   const size_t STATIC_LIMIT = 10000;
