@@ -5,7 +5,7 @@
 namespace braterskaia
 {
   const int ERR_INPUT = 1;
-  const std::size_t MAX_SZ = std::numeric_limits<std::size_t>::max();
+  const std::size_t MAX_SZ = std::numeric_limits< std::size_t >::max();
 }
 
 int main()
