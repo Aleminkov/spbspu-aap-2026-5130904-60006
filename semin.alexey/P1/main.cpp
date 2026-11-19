@@ -2,7 +2,7 @@
 #include <limits>
 #include <stdexcept>
 
-void incrementCounter(int & counter)
+void incrementCounter(int &counter)
 {
   if (counter == std::numeric_limits< int >::max()) {
     throw std::overflow_error("Переполнение счетчика");
