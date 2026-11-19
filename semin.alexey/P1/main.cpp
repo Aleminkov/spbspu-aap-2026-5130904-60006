@@ -2,12 +2,10 @@
 #include <limits>
 #include <stdexcept>
 
-using namespace std;
-
 void incrementCounter(int & counter)
 {
-  if (counter == numeric_limits< int >::max()) {
-    throw overflow_error("Переполнение счетчика");
+  if (counter == std::numeric_limits< int >::max()) {
+    throw std::overflow_error("Переполнение счетчика");
   }
 
   ++counter;
@@ -30,7 +28,7 @@ int main()
   bool dec_overflowed = false;
   bool even_overflowed = false;
 
-  while (cin >> number) {
+  while (std::cin >> number) {
     if (number == 0) {
       break;
     }
@@ -41,8 +39,7 @@ int main()
     } else if (!dec_overflowed) {
       try {
         incrementCounter(count_dec);
-      } catch (const overflow_error & error) {
-        cerr << error.what() << '\n';
+      } catch (const std::overflow_error &) {
         overflowed = true;
         dec_overflowed = true;
       }
@@ -56,8 +53,7 @@ int main()
       if (!even_overflowed) {
         try {
           incrementCounter(count_even);
-        } catch (const overflow_error & error) {
-          cerr << error.what() << '\n';
+        } catch (const std::overflow_error &) {
           overflowed = true;
           even_overflowed = true;
         }
@@ -74,17 +70,18 @@ int main()
     previous = number;
   }
 
-  if (!cin) {
-    cerr << "Ошибка ввода" << '\n';
+  if (!std::cin) {
+    std::cerr << "Ошибка ввода" << '\n';
     return error_code;
   }
 
   if (overflowed) {
+    std::cerr << "Переполнение счетчика" << '\n';
     return error_code;
   }
 
-  cout << max_dec << '\n';
-  cout << max_even << '\n';
+  std::cout << max_dec << '\n';
+  std::cout << max_even << '\n';
 
   return 0;
 }
