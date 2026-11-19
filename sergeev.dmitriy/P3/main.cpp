@@ -181,9 +181,12 @@ int main(const int argc, const char *const *const argv)
   const int SUCCESS = 0;
   const int ERROR_ARGS = 1;
   const int ERROR_DATA = 2;
+  const int ARGC_COUNT = 2;
+  const int MODE_STATIC = 1;
+  const int MODE_DYNAMIC = 2;
   const size_t STATIC_LIMIT = 10000;
 
-  if (argc != 4)
+  if (argc != ARGC_COUNT)
   {
     std::cerr << "Error: Invalid number of arguments." << std::endl;
     return ERROR_ARGS;
@@ -193,11 +196,11 @@ int main(const int argc, const char *const *const argv)
 
   if (argv[1][0] == '1' && argv[1][1] == '\0')
   {
-    num = 1;
+    num = MODE_STATIC;
   }
   else if (argv[1][0] == '2' && argv[1][1] == '\0')
   {
-    num = 2;
+    num = MODE_DYNAMIC;
   }
   else
   {
@@ -243,7 +246,7 @@ int main(const int argc, const char *const *const argv)
     return SUCCESS;
   }
 
-  if (num == 1)
+  if (num == MODE_STATIC)
   {
     if (total_elements > STATIC_LIMIT)
     {
