@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
 #include <limits>
 #include <new>
 #include <stdexcept>
@@ -9,28 +8,51 @@ namespace dortman
 {
   const int err_args = 1;
   const int err_data = 2;
+  const int expected_argc = 4;
+  const int mode_fixed = 1;
+  const int mode_dynamic = 2;
   const size_t max_fixed_size = 10000;
 
-  bool canAdd(int a, int b)
+  int parseMode(const char* str)
+  {
+    if (str == nullptr || str[0] == '\0')
+    {
+      return 0;
+    }
+    int result = 0;
+    const int base = 10;
+    for (size_t i = 0; str[i] != '\0'; ++i)
+    {
+      if (str[i] < '0' || str[i] > '9')
+      {
+        return 0;
+      }
+      const int digit = str[i] - '0';
+      if (result > (std::numeric_limits< int >::max() - digit) / base)
+      {
+        return 0;
+      }
+      result = result * base + digit;
+    }
+    return result;
+  }
+
+  int safeAdd(int a, int b)
   {
     if (b > 0 && a > std::numeric_limits< int >::max() - b)
     {
-      return false;
+      throw std::overflow_error("Переполнение при сложении целых чисел");
     }
     if (b < 0 && a < std::numeric_limits< int >::min() - b)
     {
-      return false;
+      throw std::overflow_error("Переполнение при сложении целых чисел");
     }
-    return true;
+    return a + b;
   }
 
   void addStep(int& val, int& step)
   {
-    if (!canAdd(val, step))
-    {
-      throw std::overflow_error("Переполнение при изменении элемента матрицы");
-    }
-    val += step;
+    val = safeAdd(val, step);
     if (step == std::numeric_limits< int >::max())
     {
       throw std::overflow_error("Переполнение шага спирали");
@@ -84,11 +106,7 @@ namespace dortman
         {
           const size_t j = s - i;
           const int val = matrix[i * cols + j];
-          if (!canAdd(current_sum, val))
-          {
-            throw std::overflow_error("Переполнение при вычислении суммы диагонали");
-          }
-          current_sum += val;
+          current_sum = safeAdd(current_sum, val);
         }
       }
       if (!has_min || current_sum < min_sum)
@@ -169,19 +187,59 @@ namespace dortman
       out << " " << matrix[i];
     }
   }
+
+  int processMatrix(std::istream& input, const char* out_filename, int* matrix, size_t rows, size_t cols)
+  {
+    const size_t total = rows * cols;
+    if (total > 0 && !readMatrix(input, matrix, rows, cols))
+    {
+      std::cerr << "Не удалось прочитать элементы матрицы\n";
+      return err_data;
+    }
+
+    char extra = '\0';
+    if (input >> extra)
+    {
+      std::cerr << "Обнаружены лишние данные после элементов матрицы\n";
+      return err_data;
+    }
+
+    int res15 = 0;
+    try
+    {
+      res15 = minSumMdg(matrix, rows, cols);
+      lftTopCnt(matrix, rows, cols);
+    }
+    catch (const std::overflow_error& e)
+    {
+      std::cerr << e.what() << "\n";
+      return err_data;
+    }
+
+    std::ofstream output(out_filename);
+    if (!output.is_open())
+    {
+      std::cerr << "Не удалось открыть выходной файл для записи\n";
+      return err_data;
+    }
+
+    output << res15 << "\n";
+    printMatrix(output, matrix, rows, cols);
+    output << "\n";
+    return 0;
+  }
 }
 
 int main(int argc, char** argv)
 {
-  if (argc != 4)
+  if (argc != dortman::expected_argc)
   {
     std::cerr << "Неверное количество аргументов командной строки\n";
     return dortman::err_args;
   }
 
-  char* endptr = nullptr;
-  const long num = std::strtol(argv[1], &endptr, 10);
-  if (*argv[1] == '\0' || *endptr != '\0' || (num != 1 && num != 2))
+  const int mode = dortman::parseMode(argv[1]);
+  if (mode != dortman::mode_fixed && mode != dortman::mode_dynamic)
   {
     std::cerr << "Неверный первый параметр командной строки\n";
     return dortman::err_args;
@@ -212,17 +270,19 @@ int main(int argc, char** argv)
   }
 
   const size_t total = rows * cols;
-  if (num == 1 && total > dortman::max_fixed_size)
+  if (mode == dortman::mode_fixed)
   {
-    std::cerr << "Размер матрицы превышает лимит для статического массива\n";
-    return dortman::err_data;
+    if (total > dortman::max_fixed_size)
+    {
+      std::cerr << "Размер матрицы превышает лимит для статического массива\n";
+      return dortman::err_data;
+    }
+    int fixed_matrix[dortman::max_fixed_size];
+    return dortman::processMatrix(input, argv[3], fixed_matrix, rows, cols);
   }
 
-  int fixed_matrix[dortman::max_fixed_size];
   int* dyn_matrix = nullptr;
-  int* matrix = fixed_matrix;
-
-  if (num == 2 && total > 0)
+  if (total > 0)
   {
     try
     {
@@ -233,43 +293,9 @@ int main(int argc, char** argv)
       std::cerr << "Ошибка выделения динамической памяти\n";
       return dortman::err_data;
     }
-    matrix = dyn_matrix;
   }
 
-  if (total > 0 && !dortman::readMatrix(input, matrix, rows, cols))
-  {
-    std::cerr << "Не удалось прочитать элементы матрицы\n";
-    delete[] dyn_matrix;
-    return dortman::err_data;
-  }
-
-  input.close();
-
-  int res15 = 0;
-  try
-  {
-    res15 = dortman::minSumMdg(matrix, rows, cols);
-    dortman::lftTopCnt(matrix, rows, cols);
-  }
-  catch (const std::overflow_error& e)
-  {
-    std::cerr << e.what() << "\n";
-    delete[] dyn_matrix;
-    return dortman::err_data;
-  }
-
-  std::ofstream output(argv[3]);
-  if (!output.is_open())
-  {
-    std::cerr << "Не удалось открыть выходной файл для записи\n";
-    delete[] dyn_matrix;
-    return dortman::err_data;
-  }
-
-  output << res15 << "\n";
-  dortman::printMatrix(output, matrix, rows, cols);
-  output << "\n";
-
+  const int status = dortman::processMatrix(input, argv[3], dyn_matrix, rows, cols);
   delete[] dyn_matrix;
-  return 0;
+  return status;
 }
