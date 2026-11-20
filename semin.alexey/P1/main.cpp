@@ -75,13 +75,22 @@ int main()
     return error_code;
   }
 
+  if (dec_overflowed) {
+    std::cerr << "Переполнение счетчика" << '\n';
+  } else {
+    std::cout << max_dec << '\n';
+  }
+
+  if (even_overflowed) {
+    std::cerr << "Переполнение счетчика" << '\n';
+  } else {
+    std::cout << max_even << '\n';
+  }
+
   if (overflowed) {
     std::cerr << "Переполнение счетчика" << '\n';
     return error_code;
   }
-
-  std::cout << max_dec << '\n';
-  std::cout << max_even << '\n';
 
   return 0;
 }
