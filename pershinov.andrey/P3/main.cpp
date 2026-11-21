@@ -129,8 +129,8 @@ int main(int argc, char ** argv)
     return pershinov::processMatrix(stack_matrix, rows, cols, input, output);
   }
   if (mode[0] == mode_heap) {
-    int * heap_matrix = new int[rows * cols];
-    int status = pershinov::processMatrix(heap_matrix, rows, cols, input, output);
+    int * const heap_matrix = new int[rows * cols];
+    const int status = pershinov::processMatrix(heap_matrix, rows, cols, input, output);
     delete[] heap_matrix;
     return status;
   }
