@@ -58,18 +58,47 @@ namespace pershinov {
       }
     }
   }
+  int processMatrix(int * matrix, size_t rows, size_t cols, std::istream & in, std::ostream & out)
+  {
+    const int exit_matrix_error = 2;
+    for (size_t i = 0; i < rows * cols; ++i) {
+      in >> matrix[i];
+    }
+    if (!in) {
+      std::cerr << "Error: invalid matrix\n";
+      return exit_matrix_error;
+    }
+    char extra = 0;
+    if (in >> extra) {
+      std::cerr << "Error: extra data in file\n";
+      return exit_matrix_error;
+    }
+    out << findColumn(matrix, rows, cols) << "\n";
+    spiralDecrease(matrix, rows, cols);
+    out << rows << " " << cols;
+    for (size_t i = 0; i < rows * cols; ++i) {
+      out << " " << matrix[i];
+    }
+    out << "\n";
+    return 0;
+  }
 }
 int main(int argc, char ** argv)
 {
   const int input_error = 1;
-  if (argc != 4) {
+  const int exit_matrix_error = 2;
+  const int argc_element = 4;
+  const char mode_stack = '1';
+  const char mode_heap = '2';
+  if (argc != argc_element) {
     std::cerr << "Error: wrong arguments\n";
     return input_error;
   }
   const char * const mode = argv[1];
   const char * const input_file = argv[2];
   const char * const output_file = argv[3];
-  if (!((mode[0] == '1' || mode[0] == '2') && mode[1] == '\0')) {
+
+  if (!((mode[0] == mode_stack || mode[0] == mode_heap) && mode[1] == '\0')) {
     std::cerr << "Error: wrong mode\n";
     return input_error;
   }
@@ -78,7 +107,6 @@ int main(int argc, char ** argv)
     std::cerr << "Error: could not open input file\n";
     return input_error;
   }
-  const int exit_matrix_error = 2;
   size_t cols = 0;
   size_t rows = 0;
   std::ofstream output(output_file);
@@ -91,31 +119,21 @@ int main(int argc, char ** argv)
     std::cerr << "Error: invalid matrix\n";
     return exit_matrix_error;
   }
-  const int big_size = 10000;
-  int stack_matrix[big_size];
-  int * matrix = stack_matrix;
-  if (mode[0] == '2') {
-    matrix = new int[rows * cols];
-  }
-  for (size_t i = 0; i < rows * cols; ++i) {
-    input >> matrix[i];
-  }
-  if (!input) {
-    std::cerr << "Error: invalid matrix\n";
-    if (mode[0] == '2') {
-      delete[] matrix;
+  if (mode[0] == mode_stack) {
+    const size_t big_size = 10000;
+    if (rows * cols > big_size) {
+      std::cerr << "Error: matrix too large\n";
+      return exit_matrix_error;
     }
-    return exit_matrix_error;
+    int stack_matrix[big_size];
+    return pershinov::processMatrix(stack_matrix, rows, cols, input, output);
   }
-  output << pershinov::findColumn(matrix, rows, cols) << '\n';
-  pershinov::spiralDecrease(matrix, rows, cols);
-  output << rows << " " << cols;
-  for (size_t i = 0; i < rows * cols; ++i) {
-    output << " " << matrix[i];
-  }
-  output << '\n';
-  if (mode[0] == '2') {
-    delete[] matrix;
+  if (mode[0] == mode_heap) {
+    int * heap_matrix = new int[rows * cols];
+    int status = pershinov::processMatrix(heap_matrix, rows, cols, input, output);
+    delete[] heap_matrix;
+    return status;
   }
   return 0;
 }
+
