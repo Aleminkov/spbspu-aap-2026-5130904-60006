@@ -59,6 +59,12 @@ namespace aleshin {
     return true;
   }
 
+  bool hasExtraData(std::istream& input)
+  {
+    char extra = '\0';
+    return static_cast< bool >(input >> extra);
+  }
+
   long long diagonalSum(const int* data, std::size_t rows, std::size_t cols, std::size_t row, std::size_t col)
   {
     long long sum = 0;
