@@ -10,6 +10,8 @@ namespace aleshin {
   constexpr int argsError = 1;
   constexpr int inputError = 2;
   constexpr int expectedArgsCount = 4;
+  constexpr int staticMode = 1;
+  constexpr int dynamicMode = 2;
   constexpr std::size_t maxSize = 10000;
 
   bool parseMode(const char* arg, int& mode)
@@ -21,11 +23,11 @@ namespace aleshin {
       return false;
     }
     if (arg[0] == '1') {
-      mode = 1;
+      mode = staticMode;
       return true;
     }
     if (arg[0] == '2') {
-      mode = 2;
+      mode = dynamicMode;
       return true;
     }
     return false;
@@ -62,7 +64,7 @@ namespace aleshin {
   bool hasExtraData(std::istream& input)
   {
     char extra = '\0';
-    return static_cast< bool >(input >> extra);
+    return (input >> extra).good();
   }
 
   long long diagonalSum(const int* data, std::size_t rows, std::size_t cols, std::size_t row, std::size_t col)
@@ -144,7 +146,7 @@ namespace aleshin {
       return inputError;
     }
     const std::size_t count = rows * cols;
-    if (mode == 1) {
+    if (mode == staticMode) {
       if (count > maxSize) {
         std::cerr << "Error: matrix is too large for a fixed-size array\n";
         return inputError;
