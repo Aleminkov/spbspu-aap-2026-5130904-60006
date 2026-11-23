@@ -15,26 +15,19 @@ namespace dortman
 
   int parseMode(const char* str)
   {
-    if (str == nullptr || str[0] == '\0')
+    if (str == nullptr)
     {
       return 0;
     }
-    int result = 0;
-    const int base = 10;
-    for (size_t i = 0; str[i] != '\0'; ++i)
+    if (str[0] == '1' && str[1] == '\0')
     {
-      if (str[i] < '0' || str[i] > '9')
-      {
-        return 0;
-      }
-      const int digit = str[i] - '0';
-      if (result > (std::numeric_limits< int >::max() - digit) / base)
-      {
-        return 0;
-      }
-      result = result * base + digit;
+    return mode_fixed;
     }
-    return result;
+    if (str[0] == '2' && str[1] == '\0')
+    {
+    return mode_dynamic;
+    }
+    return 0;
   }
 
   int safeAdd(int a, int b)
