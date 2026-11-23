@@ -4,9 +4,9 @@
 
 namespace semin
 {
-  void incrementCounter(int &counter)
+  void incrementCounter(size_t &counter)
   {
-    if (counter == std::numeric_limits< int >::max()) {
+    if (counter == std::numeric_limits< size_t >::max()) {
       throw std::overflow_error("Переполнение счетчика");
     }
 
