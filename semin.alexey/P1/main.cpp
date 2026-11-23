@@ -22,10 +22,10 @@ int main()
   int previous = 0;
 
   size_t count_dec = 0;
-  int max_dec = 0;
+  size_t max_dec = 0;
 
   size_t count_even = 0;
-  int max_even = 0;
+  size_t max_even = 0;
 
   bool overflowed = false;
   bool dec_overflowed = false;
