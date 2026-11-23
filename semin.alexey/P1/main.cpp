@@ -2,13 +2,16 @@
 #include <limits>
 #include <stdexcept>
 
-void incrementCounter(int &counter)
+namsepace semin
 {
-  if (counter == std::numeric_limits< int >::max()) {
-    throw std::overflow_error("Переполнение счетчика");
-  }
+  void incrementCounter(int &counter)
+  {
+    if (counter == std::numeric_limits< int >::max()) {
+      throw std::overflow_error("Переполнение счетчика");
+    }
 
-  ++counter;
+    ++counter;
+  }
 }
 
 int main()
@@ -18,10 +21,10 @@ int main()
   int number = 0;
   int previous = 0;
 
-  int count_dec = 0;
+  size_t count_dec = 0;
   int max_dec = 0;
 
-  int count_even = 0;
+  size_t count_even = 0;
   int max_even = 0;
 
   bool overflowed = false;
@@ -38,7 +41,7 @@ int main()
       dec_overflowed = false;
     } else if (!dec_overflowed) {
       try {
-        incrementCounter(count_dec);
+        semin::incrementCounter(count_dec);
       } catch (const std::overflow_error &) {
         overflowed = true;
         dec_overflowed = true;
@@ -52,7 +55,7 @@ int main()
     if (number % 2 == 0) {
       if (!even_overflowed) {
         try {
-          incrementCounter(count_even);
+          semin::incrementCounter(count_even);
         } catch (const std::overflow_error &) {
           overflowed = true;
           even_overflowed = true;
