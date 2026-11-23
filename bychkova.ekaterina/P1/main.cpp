@@ -12,9 +12,9 @@ int main()
   int previous_value = 0;
   int last_non_zero = 0;
 
-  int current_run_length = 0;
-  int max_run_length = 0;
-  int sign_changes = 0;
+  std::size_t current_run_length = 0;
+  std::size_t max_run_length = 0;
+  std::size_t sign_changes = 0;
   bool run_length_error = false;
   bool sign_changes_error = false;
 
