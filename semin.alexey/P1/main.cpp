@@ -2,8 +2,7 @@
 #include <limits>
 #include <stdexcept>
 
-namespace semin
-{
+namespace semin {
   void incrementCounter(size_t &counter)
   {
     if (counter == std::numeric_limits< size_t >::max()) {
