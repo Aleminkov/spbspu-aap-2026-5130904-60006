@@ -49,6 +49,8 @@ namespace podvalnyj {
 
   void readSize(std::ifstream & input, std::size_t & rows, std::size_t & cols)
   {
+    rows = 0;
+    cols = 0;
     int rows_count = 0;
     int cols_count = 0;
     input >> rows_count >> cols_count;
@@ -58,8 +60,8 @@ namespace podvalnyj {
     if ((rows_count == 0) != (cols_count == 0)) {
       throw std::logic_error("Invalid matrix size");
     }
-    rows = rows_count;
-    cols = cols_count;
+    rows = static_cast< std::size_t >(rows_count);
+    cols = static_cast< std::size_t >(cols_count);
   }
 
   void readMatrix(std::ifstream & input, int * matrix, std::size_t size)
@@ -218,4 +220,3 @@ int main(int argc, char ** argv)
   }
   return 0;
 }
-
