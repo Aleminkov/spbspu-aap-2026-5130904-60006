@@ -3,6 +3,7 @@
 #include <cstddef>
 
 namespace pershinov {
+  const int input_error = 1;
   const int exit_matrix_error = 2;
   size_t findColumn(const int * matrix, size_t rows, size_t cols)
   {
@@ -66,7 +67,7 @@ namespace pershinov {
     }
     if (!in) {
       std::cerr << "Error: invalid matrix\n";
-      return exit_matrix_error;
+      return pershinov::exit_matrix_error;
     }
     char extra = 0;
     if (in >> extra) {
@@ -85,13 +86,12 @@ namespace pershinov {
 }
 int main(int argc, char ** argv)
 {
-  const int input_error = 1;
   const int argc_element = 4;
   const char mode_stack = '1';
   const char mode_heap = '2';
   if (argc != argc_element) {
     std::cerr << "Error: wrong arguments\n";
-    return input_error;
+    return pershinov::input_error;
   }
   const char * const mode = argv[1];
   const char * const input_file = argv[2];
@@ -99,19 +99,19 @@ int main(int argc, char ** argv)
 
   if (!((mode[0] == mode_stack || mode[0] == mode_heap) && mode[1] == '\0')) {
     std::cerr << "Error: wrong mode\n";
-    return input_error;
+    return pershinov::input_error;
   }
   std::ifstream input(input_file);
   if (!input) {
     std::cerr << "Error: could not open input file\n";
-    return input_error;
+    return pershinov::input_error;
   }
   size_t cols = 0;
   size_t rows = 0;
   std::ofstream output(output_file);
   if (!output) {
     std::cerr << "Error: could not open output file\n";
-    return input_error;
+    return pershinov::input_error;
   }
   input >> rows >> cols;
   if (!input) {
