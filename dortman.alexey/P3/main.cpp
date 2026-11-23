@@ -21,11 +21,11 @@ namespace dortman
     }
     if (str[0] == '1' && str[1] == '\0')
     {
-    return mode_fixed;
+      return mode_fixed;
     }
     if (str[0] == '2' && str[1] == '\0')
     {
-    return mode_dynamic;
+      return mode_dynamic;
     }
     return 0;
   }
