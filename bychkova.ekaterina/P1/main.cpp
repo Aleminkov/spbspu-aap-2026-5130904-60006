@@ -20,7 +20,7 @@ int main()
 
   while (std::cin >> current_value && current_value != 0) {
     if (current_value >= previous_value) {
-      if (current_run_length == std::numeric_limits< int >::max()) {
+      if (current_run_length == std::numeric_limits< std::size_t >::max()) {
         run_length_error = true;
       } else {
         ++current_run_length;
@@ -34,7 +34,7 @@ int main()
     }
 
     if (last_non_zero != 0 && ((last_non_zero < 0 && current_value > 0) || (last_non_zero > 0 && current_value < 0))) {
-      if (sign_changes == std::numeric_limits< int >::max()) {
+      if (sign_changes == std::numeric_limits< std::size_t >::max()) {
         sign_changes_error = true;
       } else {
         ++sign_changes;
