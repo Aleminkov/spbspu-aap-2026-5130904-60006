@@ -2,7 +2,7 @@
 #include <limits>
 #include <stdexcept>
 
-namsepace semin
+namespace semin
 {
   void incrementCounter(int &counter)
   {
