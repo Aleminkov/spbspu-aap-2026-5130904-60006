@@ -9,17 +9,20 @@ namespace proskuryakov
 {
   const int err_args = 1;
   const int err_input = 2;
+  const int mode_fixed = 1;
+  const int mode_dynamic = 2;
+  const int args_count = 4;
   const size_t max_fixed_size = 10000;
 
   int parseMode(const char *text)
   {
     if (text[0] == '1' && text[1] == '\0')
     {
-      return 1;
+      return mode_fixed;
     }
     if (text[0] == '2' && text[1] == '\0')
     {
-      return 2;
+      return mode_dynamic;
     }
     throw std::invalid_argument("num must be 1 or 2");
   }
@@ -152,7 +155,7 @@ int main(int argc, char *argv[])
 {
   try
   {
-    if (argc != 4)
+    if (argc != proskuryakov::args_count)
     {
       throw std::invalid_argument("expected 3 arguments: ./lab num input output");
     }
@@ -165,7 +168,7 @@ int main(int argc, char *argv[])
     }
     long long sdg = 0;
     size_t lsr = 0;
-    if (mode == 1)
+    if (mode == proskuryakov::mode_fixed)
     {
       proskuryakov::processFixed(in, sdg, lsr);
     }
@@ -188,7 +191,7 @@ int main(int argc, char *argv[])
   }
   catch (const std::runtime_error &e)
   {
-    std::cerr << "Error" << e.what() << '\n';
+    std::cerr << "Error: " << e.what() << '\n';
     return proskuryakov::err_input;
   }
   catch (const std::bad_alloc &e)
