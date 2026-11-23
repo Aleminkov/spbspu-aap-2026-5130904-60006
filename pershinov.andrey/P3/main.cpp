@@ -3,6 +3,7 @@
 #include <cstddef>
 
 namespace pershinov {
+  const int exit_matrix_error = 2;
   size_t findColumn(const int * matrix, size_t rows, size_t cols)
   {
     size_t current_length = 0;
@@ -60,7 +61,6 @@ namespace pershinov {
   }
   int processMatrix(int * matrix, size_t rows, size_t cols, std::istream & in, std::ostream & out)
   {
-    const int exit_matrix_error = 2;
     for (size_t i = 0; i < rows * cols; ++i) {
       in >> matrix[i];
     }
@@ -71,7 +71,7 @@ namespace pershinov {
     char extra = 0;
     if (in >> extra) {
       std::cerr << "Error: extra data in file\n";
-      return exit_matrix_error;
+      return pershinov::exit_matrix_error;
     }
     out << findColumn(matrix, rows, cols) << "\n";
     spiralDecrease(matrix, rows, cols);
@@ -86,7 +86,6 @@ namespace pershinov {
 int main(int argc, char ** argv)
 {
   const int input_error = 1;
-  const int exit_matrix_error = 2;
   const int argc_element = 4;
   const char mode_stack = '1';
   const char mode_heap = '2';
@@ -117,13 +116,13 @@ int main(int argc, char ** argv)
   input >> rows >> cols;
   if (!input) {
     std::cerr << "Error: invalid matrix\n";
-    return exit_matrix_error;
+    return pershinov::exit_matrix_error;
   }
   if (mode[0] == mode_stack) {
     const size_t big_size = 10000;
     if (rows * cols > big_size) {
       std::cerr << "Error: matrix too large\n";
-      return exit_matrix_error;
+      return pershinov::exit_matrix_error;
     }
     int stack_matrix[big_size];
     return pershinov::processMatrix(stack_matrix, rows, cols, input, output);
