@@ -5,19 +5,24 @@
 #include <stdexcept>
 
 namespace podvalnyj {
-  const std::size_t MAKS_RAZMER = 10000;
+  const std::size_t MAX_SIZE = 10000;
+  const int ARGS_COUNT = 4;
+  const int MODE_FIXED = 1;
+  const int MODE_DYNAMIC = 2;
+  const int ERROR_ARGS = 1;
+  const int ERROR_INPUT = 2;
 
-  void proverkaKolva(int argc)
+  void checkArgsCount(int argc)
   {
-    if (argc < 4) {
+    if (argc < ARGS_COUNT) {
       throw std::logic_error("Not enough arguments");
     }
-    if (argc > 4) {
+    if (argc > ARGS_COUNT) {
       throw std::logic_error("Too many arguments");
     }
   }
 
-  bool etoChislo(const char * argument)
+  bool isNumber(const char * argument)
   {
     if (argument[0] == '\0') {
       return false;
@@ -30,187 +35,187 @@ namespace podvalnyj {
     return true;
   }
 
-  int poluchitNomer(const char * argument)
+  int getMode(const char * argument)
   {
-    if (!etoChislo(argument)) {
+    if (!isNumber(argument)) {
       throw std::logic_error("First parameter is not a number");
     }
-    if (argument[1] != '\0' || (argument[0] != '1' && argument[0] != '2')) {
+    const int mode = argument[0] - '0';
+    if (argument[1] != '\0' || (mode != MODE_FIXED && mode != MODE_DYNAMIC)) {
       throw std::logic_error("First parameter is out of range");
     }
-    return argument[0] - '0';
+    return mode;
   }
 
-  void chtenieRazmera(std::ifstream & vhod, std::size_t & kolvo_strok, std::size_t & kolvo_stolbcov)
+  void readSize(std::ifstream & input, std::size_t & rows, std::size_t & cols)
   {
-    int chislo_strok = 0;
-    int chislo_stolbcov = 0;
-    vhod >> chislo_strok >> chislo_stolbcov;
-    if (vhod.fail() || chislo_strok < 0 || chislo_stolbcov < 0) {
+    int rows_count = 0;
+    int cols_count = 0;
+    input >> rows_count >> cols_count;
+    if (input.fail() || rows_count < 0 || cols_count < 0) {
       throw std::logic_error("Invalid matrix size");
     }
-    if ((chislo_strok == 0) != (chislo_stolbcov == 0)) {
+    if ((rows_count == 0) != (cols_count == 0)) {
       throw std::logic_error("Invalid matrix size");
     }
-    kolvo_strok = chislo_strok;
-    kolvo_stolbcov = chislo_stolbcov;
+    rows = rows_count;
+    cols = cols_count;
   }
 
-  void chtenieMatricy(std::ifstream & vhod, int * matrica, std::size_t razmer)
+  void readMatrix(std::ifstream & input, int * matrix, std::size_t size)
   {
-    for (std::size_t i = 0; i < razmer; ++i) {
-      vhod >> matrica[i];
-      if (vhod.fail()) {
+    for (std::size_t i = 0; i < size; ++i) {
+      input >> matrix[i];
+      if (input.fail()) {
         throw std::logic_error("Invalid matrix elements");
       }
     }
-    char lishnee = 0;
-    vhod >> lishnee;
-    if (!vhod.eof()) {
+    char extra = 0;
+    input >> extra;
+    if (!input.eof()) {
       throw std::logic_error("Extra data in input file");
     }
   }
 
-  int * sozdatMatricu(std::size_t razmer)
+  int * createMatrix(std::size_t size)
   {
-    return new int[razmer];
+    return new int[size];
   }
 
-  void udalitMatricu(const int * matrica)
+  void deleteMatrix(const int * matrix)
   {
-    delete[] matrica;
+    delete[] matrix;
   }
 
-  bool estOdinakovye(const int * stroka, std::size_t kolvo_stolbcov)
+  bool hasEqualNeighbours(const int * row, std::size_t cols)
   {
-    for (std::size_t j = 1; j < kolvo_stolbcov; ++j) {
-      if (stroka[j] == stroka[j - 1]) {
+    for (std::size_t j = 1; j < cols; ++j) {
+      if (row[j] == row[j - 1]) {
         return true;
       }
     }
     return false;
   }
 
-  std::size_t dlinaSerii(const int * stroka, std::size_t kolvo_stolbcov)
+  std::size_t longestSeries(const int * row, std::size_t cols)
   {
-    if (kolvo_stolbcov == 0) {
+    if (cols == 0) {
       return 0;
     }
-    std::size_t tekushaya = 1;
-    std::size_t maks_dlina = 1;
-    for (std::size_t j = 1; j < kolvo_stolbcov; ++j) {
-      if (stroka[j] == stroka[j - 1]) {
-        ++tekushaya;
+    std::size_t current = 1;
+    std::size_t longest = 1;
+    for (std::size_t j = 1; j < cols; ++j) {
+      if (row[j] == row[j - 1]) {
+        ++current;
       } else {
-        tekushaya = 1;
+        current = 1;
       }
-      if (tekushaya > maks_dlina) {
-        maks_dlina = tekushaya;
-      }
-    }
-    return maks_dlina;
-  }
-
-  std::size_t strokiBezPovtorov(const int * matrica, std::size_t kolvo_strok, std::size_t kolvo_stolbcov)
-  {
-    std::size_t kolvo = 0;
-    for (std::size_t i = 0; i < kolvo_strok; ++i) {
-      if (!estOdinakovye(matrica + i * kolvo_stolbcov, kolvo_stolbcov)) {
-        ++kolvo;
+      if (current > longest) {
+        longest = current;
       }
     }
-    return kolvo;
+    return longest;
   }
 
-  std::size_t nomerStrokiSeriya(const int * matrica, std::size_t kolvo_strok, std::size_t kolvo_stolbcov)
+  std::size_t countRowsWithoutEqual(const int * matrix, std::size_t rows, std::size_t cols)
   {
-    std::size_t nomer = 0;
-    std::size_t maks_dlina = 0;
-    for (std::size_t i = 0; i < kolvo_strok; ++i) {
-      const std::size_t dlina = dlinaSerii(matrica + i * kolvo_stolbcov, kolvo_stolbcov);
-      if (dlina > maks_dlina) {
-        maks_dlina = dlina;
-        nomer = i + 1;
+    std::size_t count = 0;
+    for (std::size_t i = 0; i < rows; ++i) {
+      if (!hasEqualNeighbours(matrix + i * cols, cols)) {
+        ++count;
       }
     }
-    return nomer;
+    return count;
   }
 
-  void zapisRezultata(const char * imya_fayla, const int * matrica, std::size_t kolvo_strok, std::size_t kolvo_stolbcov)
+  std::size_t rowWithLongestSeries(const int * matrix, std::size_t rows, std::size_t cols)
   {
-    std::ofstream vyhod(imya_fayla);
-    if (!vyhod.is_open()) {
+    std::size_t number = 0;
+    std::size_t longest = 0;
+    for (std::size_t i = 0; i < rows; ++i) {
+      const std::size_t length = longestSeries(matrix + i * cols, cols);
+      if (length > longest) {
+        longest = length;
+        number = i + 1;
+      }
+    }
+    return number;
+  }
+
+  void writeResults(const char * filename, const int * matrix, std::size_t rows, std::size_t cols)
+  {
+    std::ofstream output(filename);
+    if (!output.is_open()) {
       throw std::logic_error("Cannot open output file");
     }
-    vyhod << nomerStrokiSeriya(matrica, kolvo_strok, kolvo_stolbcov) << "\n";
-    vyhod << strokiBezPovtorov(matrica, kolvo_strok, kolvo_stolbcov) << "\n";
-    vyhod.close();
-    if (vyhod.fail()) {
+    output << rowWithLongestSeries(matrix, rows, cols) << "\n";
+    output << countRowsWithoutEqual(matrix, rows, cols) << "\n";
+    output.close();
+    if (output.fail()) {
       throw std::logic_error("Cannot write output file");
     }
   }
 
-  void fiksirovanniyMassiv(
-      std::ifstream & vhod, const char * imya_fayla, std::size_t kolvo_strok, std::size_t kolvo_stolbcov)
+  void processFixed(std::ifstream & input, const char * filename, std::size_t rows, std::size_t cols)
   {
-    if (kolvo_stolbcov != 0 && kolvo_strok > MAKS_RAZMER / kolvo_stolbcov) {
+    if (cols != 0 && rows > MAX_SIZE / cols) {
       throw std::logic_error("Matrix is too big");
     }
-    int matrica[MAKS_RAZMER] = {};
-    chtenieMatricy(vhod, matrica, kolvo_strok * kolvo_stolbcov);
-    zapisRezultata(imya_fayla, matrica, kolvo_strok, kolvo_stolbcov);
+    int matrix[MAX_SIZE] = {};
+    readMatrix(input, matrix, rows * cols);
+    writeResults(filename, matrix, rows, cols);
   }
 
-  void dinamicheskiyMassiv(
-      std::ifstream & vhod, const char * imya_fayla, std::size_t kolvo_strok, std::size_t kolvo_stolbcov)
+  void processDynamic(std::ifstream & input, const char * filename, std::size_t rows, std::size_t cols)
   {
-    int * const matrica = sozdatMatricu(kolvo_strok * kolvo_stolbcov);
+    int * const matrix = createMatrix(rows * cols);
     try {
-      chtenieMatricy(vhod, matrica, kolvo_strok * kolvo_stolbcov);
-      zapisRezultata(imya_fayla, matrica, kolvo_strok, kolvo_stolbcov);
+      readMatrix(input, matrix, rows * cols);
+      writeResults(filename, matrix, rows, cols);
     } catch (...) {
-      udalitMatricu(matrica);
+      deleteMatrix(matrix);
       throw;
     }
-    udalitMatricu(matrica);
+    deleteMatrix(matrix);
   }
 
-  void obrabotka(int nomer_zadaniya, const char * imya_vhoda, const char * imya_vyhoda)
+  void process(int mode, const char * input_name, const char * output_name)
   {
-    std::ifstream vhod(imya_vhoda);
-    if (!vhod.is_open()) {
+    std::ifstream input(input_name);
+    if (!input.is_open()) {
       throw std::logic_error("Cannot open input file");
     }
-    std::size_t kolvo_strok = 0;
-    std::size_t kolvo_stolbcov = 0;
-    chtenieRazmera(vhod, kolvo_strok, kolvo_stolbcov);
-    if (nomer_zadaniya == 1) {
-      fiksirovanniyMassiv(vhod, imya_vyhoda, kolvo_strok, kolvo_stolbcov);
+    std::size_t rows = 0;
+    std::size_t cols = 0;
+    readSize(input, rows, cols);
+    if (mode == MODE_FIXED) {
+      processFixed(input, output_name, rows, cols);
     } else {
-      dinamicheskiyMassiv(vhod, imya_vyhoda, kolvo_strok, kolvo_stolbcov);
+      processDynamic(input, output_name, rows, cols);
     }
   }
 }
 
 int main(int argc, char ** argv)
 {
-  int nomer_zadaniya = 0;
+  int mode = 0;
   try {
-    podvalnyj::proverkaKolva(argc);
-    nomer_zadaniya = podvalnyj::poluchitNomer(argv[1]);
+    podvalnyj::checkArgsCount(argc);
+    mode = podvalnyj::getMode(argv[1]);
   } catch (const std::logic_error & e) {
     std::cerr << e.what() << "\n";
-    return 1;
+    return podvalnyj::ERROR_ARGS;
   }
 
   try {
-    podvalnyj::obrabotka(nomer_zadaniya, argv[2], argv[3]);
+    podvalnyj::process(mode, argv[2], argv[3]);
   } catch (const std::logic_error & e) {
     std::cerr << e.what() << "\n";
-    return 2;
+    return podvalnyj::ERROR_INPUT;
   } catch (const std::bad_alloc & e) {
     std::cerr << "Not enough memory\n";
-    return 2;
+    return podvalnyj::ERROR_INPUT;
   }
   return 0;
 }
+
