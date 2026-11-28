@@ -1,6 +1,6 @@
 #include "rectangle.hpp"
 
-#include "shape-common.hpp"
+#include "../shape-common.hpp"
 
 semin::Rectangle::Rectangle(const semin::point_t & position, double width, double height):
   position_(position),

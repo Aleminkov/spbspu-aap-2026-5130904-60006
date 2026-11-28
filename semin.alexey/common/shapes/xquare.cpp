@@ -1,6 +1,6 @@
 #include "xquare.hpp"
 
-#include "shape-common.hpp"
+#include "../shape-common.hpp"
 
 namespace
 {

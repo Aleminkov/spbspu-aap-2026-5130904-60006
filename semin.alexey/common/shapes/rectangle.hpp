@@ -1,14 +1,14 @@
-#ifndef RING_HPP
-#define RING_HPP
+#ifndef RECTANGLE_HPP
+#define RECTANGLE_HPP
 
-#include "shape.hpp"
+#include "../shape.hpp"
 
 namespace semin
 {
-  class Ring : public Shape
+  class Rectangle : public Shape
   {
   public:
-    Ring(const point_t & position, double outer_radius, double inner_radius);
+    Rectangle(const point_t & position, double width, double height);
 
     double getArea() const override;
     rectangle_t getFrameRect() const override;
@@ -18,8 +18,8 @@ namespace semin
 
   private:
     point_t position_;
-    double outer_radius_;
-    double inner_radius_;
+    double width_;
+    double height_;
   };
 }
 

@@ -1,14 +1,14 @@
-#ifndef RECTANGLE_HPP
-#define RECTANGLE_HPP
+#ifndef XQUARE_HPP
+#define XQUARE_HPP
 
-#include "shape.hpp"
+#include "../shape.hpp"
 
 namespace semin
 {
-  class Rectangle : public Shape
+  class Xquare : public Shape
   {
   public:
-    Rectangle(const point_t & position, double width, double height);
+    Xquare(const point_t & position, double diagonal);
 
     double getArea() const override;
     rectangle_t getFrameRect() const override;
@@ -18,8 +18,7 @@ namespace semin
 
   private:
     point_t position_;
-    double width_;
-    double height_;
+    double diagonal_;
   };
 }
 

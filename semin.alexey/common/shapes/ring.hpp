@@ -1,14 +1,14 @@
-#ifndef XQUARE_HPP
-#define XQUARE_HPP
+#ifndef RING_HPP
+#define RING_HPP
 
-#include "shape.hpp"
+#include "../shape.hpp"
 
 namespace semin
 {
-  class Xquare : public Shape
+  class Ring : public Shape
   {
   public:
-    Xquare(const point_t & position, double diagonal);
+    Ring(const point_t & position, double outer_radius, double inner_radius);
 
     double getArea() const override;
     rectangle_t getFrameRect() const override;
@@ -18,7 +18,8 @@ namespace semin
 
   private:
     point_t position_;
-    double diagonal_;
+    double outer_radius_;
+    double inner_radius_;
   };
 }
 

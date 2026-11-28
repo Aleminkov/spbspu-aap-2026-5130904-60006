@@ -1,7 +1,7 @@
-#include "../common/rectangle.hpp"
-#include "../common/ring.hpp"
 #include "../common/shape-utilities.hpp"
-#include "../common/xquare.hpp"
+#include "../common/shapes/rectangle.hpp"
+#include "../common/shapes/ring.hpp"
+#include "../common/shapes/xquare.hpp"
 
 #include <cmath>
 #include <cstddef>
