@@ -1,4 +1,4 @@
-#include "rectangle.hpp"
+#include "shapes/rectangle.hpp"
 
 #include "../shape-common.hpp"
 

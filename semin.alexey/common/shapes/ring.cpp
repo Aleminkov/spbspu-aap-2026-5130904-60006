@@ -1,4 +1,4 @@
-#include "ring.hpp"
+#include "shapes/ring.hpp"
 
 #include <stdexcept>
 

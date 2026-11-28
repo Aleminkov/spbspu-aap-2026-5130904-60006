@@ -1,4 +1,4 @@
-#include "xquare.hpp"
+#include "shapes/xquare.hpp"
 
 #include "../shape-common.hpp"
 
