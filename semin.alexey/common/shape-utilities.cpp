@@ -40,17 +40,13 @@ namespace
     return result;
   }
 
-  semin::point_t getScaledPosition(const semin::point_t & position,
-    const semin::point_t & center, double factor)
+  semin::point_t getScaledPosition(const semin::point_t & position, const semin::point_t & center, double factor)
   {
     const double offsetX = checkedSubtract(position.x, center.x);
     const double offsetY = checkedSubtract(position.y, center.y);
     const double scaledX = checkedMultiply(offsetX, factor);
     const double scaledY = checkedMultiply(offsetY, factor);
-    const semin::point_t result = {
-      checkedAdd(center.x, scaledX),
-      checkedAdd(center.y, scaledY)
-    };
+    const semin::point_t result = {checkedAdd(center.x, scaledX), checkedAdd(center.y, scaledY)};
     return result;
   }
 
@@ -69,8 +65,7 @@ namespace
     }
   }
 
-  void getBounds(const semin::rectangle_t & frame, double & left, double & right,
-    double & bottom, double & top)
+  void getBounds(const semin::rectangle_t & frame, double & left, double & right, double & bottom, double & top)
   {
     left = checkedSubtract(frame.pos.x, frame.width * half);
     right = checkedAdd(frame.pos.x, frame.width * half);
@@ -79,8 +74,7 @@ namespace
   }
 }
 
-void semin::scaleShapes(semin::Shape * const shapes[], std::size_t count,
-  const semin::point_t & center, double factor)
+void semin::scaleShapes(semin::Shape * const shapes[], std::size_t count, const semin::point_t & center, double factor)
 {
   validateShapes(shapes, count);
   semin::detail::validatePoint(center);
@@ -105,8 +99,8 @@ void semin::scaleShapes(semin::Shape * const shapes[], std::size_t count,
   }
 }
 
-void semin::printSummary(const char * title, semin::Shape * const shapes[],
-  const char * const names[], std::size_t count)
+void semin::printSummary(const char * title,
+  semin::Shape * const shapes[], const char * const names[], std::size_t count)
 {
   validateShapes(shapes, count);
   if (names == nullptr)
@@ -160,9 +154,9 @@ void semin::printSummary(const char * title, semin::Shape * const shapes[],
       }
     }
 
-    std::cout << "  " << names[index] << ": area = " << area
-      << ", frame center = (" << frame.pos.x << ", " << frame.pos.y << ")"
-      << ", width = " << frame.width << ", height = " << frame.height << "\n";
+    std::cout << "  " << names[index] << ": area = " << area << ", frame center = (" << frame.pos.x;
+    std::cout << ", " << frame.pos.y << "), width = " << frame.width;
+    std::cout << ", height = " << frame.height << "\n";
   }
 
   const double frameWidth = checkedSubtract(right, left);
@@ -170,6 +164,6 @@ void semin::printSummary(const char * title, semin::Shape * const shapes[],
   const double frame_center_x = checkedAdd(left * half, right * half);
   const double frame_center_y = checkedAdd(bottom * half, top * half);
   std::cout << "  Total area = " << total_area << "\n";
-  std::cout << "  Overall frame center = (" << frame_center_x << ", " << frame_center_y << ")"
-    << ", width = " << frameWidth << ", height = " << frameHeight << "\n";
+  std::cout << "  Overall frame center = (" << frame_center_x << ", " << frame_center_y << ")";
+  std::cout << ", width = " << frameWidth << ", height = " << frameHeight << "\n";
 }

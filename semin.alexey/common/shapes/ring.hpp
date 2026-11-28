@@ -5,7 +5,7 @@
 
 namespace semin
 {
-  class Ring : public Shape
+  class Ring: public Shape
   {
   public:
     Ring(const point_t & position, double outer_radius, double inner_radius);

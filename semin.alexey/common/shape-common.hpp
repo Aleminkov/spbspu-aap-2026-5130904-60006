@@ -44,8 +44,7 @@ namespace semin
       }
     }
 
-    inline point_t movePoint(const point_t & position, double dx, double dy,
-      const char * message)
+    inline point_t movePoint(const point_t & position, double dx, double dy, const char * message)
     {
       validateOffset(dx, dy);
       const point_t result = {position.x + dx, position.y + dy};

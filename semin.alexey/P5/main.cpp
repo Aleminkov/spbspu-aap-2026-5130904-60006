@@ -29,8 +29,7 @@ int main()
 {
   try
   {
-    semin::Rectangle rectangle({rectangle_center_x, rectangle_center_y},
-      rectangle_width, rectangle_height);
+    semin::Rectangle rectangle({rectangle_center_x, rectangle_center_y}, rectangle_width, rectangle_height);
     semin::Xquare xquare({xquare_center_x, xquare_center_y}, xquare_diagonal);
     semin::Ring ring({ring_center_x, ring_center_y}, ring_outer_radius, ring_inner_radius);
     semin::Shape * shapes[] = {&rectangle, &xquare, &ring};

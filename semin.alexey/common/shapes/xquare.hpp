@@ -5,7 +5,7 @@
 
 namespace semin
 {
-  class Xquare : public Shape
+  class Xquare: public Shape
   {
   public:
     Xquare(const point_t & position, double diagonal);

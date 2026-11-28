@@ -17,8 +17,7 @@ semin::Xquare::Xquare(const semin::point_t & position, double diagonal):
 
 double semin::Xquare::getArea() const
 {
-  return semin::detail::multiplyFinite(diagonal_, diagonal_,
-    "Xquare area exceeds double range") * half;
+  return semin::detail::multiplyFinite(diagonal_, diagonal_, "Xquare area exceeds double range") * half;
 }
 
 semin::rectangle_t semin::Xquare::getFrameRect() const
@@ -35,13 +34,11 @@ void semin::Xquare::move(const semin::point_t & position)
 
 void semin::Xquare::move(double dx, double dy)
 {
-  position_ = semin::detail::movePoint(position_, dx, dy,
-    "Xquare position exceeds double range");
+  position_ = semin::detail::movePoint(position_, dx, dy, "Xquare position exceeds double range");
 }
 
 void semin::Xquare::scale(double factor)
 {
   semin::detail::validatePositive(factor, "Scale factor must be positive and finite");
-  diagonal_ = semin::detail::multiplyFinite(diagonal_, factor,
-    "Xquare diagonal exceeds double range");
+  diagonal_ = semin::detail::multiplyFinite(diagonal_, factor, "Xquare diagonal exceeds double range");
 }
