@@ -31,17 +31,14 @@ void semin::Rectangle::move(const semin::point_t & position)
 
 void semin::Rectangle::move(double dx, double dy)
 {
-  position_ = semin::detail::movePoint(position_, dx, dy,
-    "Rectangle position exceeds double range");
+  position_ = semin::detail::movePoint(position_, dx, dy, "Rectangle position exceeds double range");
 }
 
 void semin::Rectangle::scale(double factor)
 {
   semin::detail::validatePositive(factor, "Scale factor must be positive and finite");
-  const double width = semin::detail::multiplyFinite(width_, factor,
-    "Rectangle width exceeds double range");
-  const double height = semin::detail::multiplyFinite(height_, factor,
-    "Rectangle height exceeds double range");
+  const double width = semin::detail::multiplyFinite(width_, factor, "Rectangle width exceeds double range");
+  const double height = semin::detail::multiplyFinite(height_, factor, "Rectangle height exceeds double range");
   width_ = width;
   height_ = height;
 }

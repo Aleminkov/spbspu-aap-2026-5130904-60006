@@ -14,17 +14,19 @@ int main()
   double centerX = 0.0;
   double centerY = 0.0;
   double factor = 0.0;
-  if (!(std::cin >> centerX >> centerY >> factor)) {
+  if (!(std::cin >> centerX >> centerY >> factor))
+  {
     std::cerr << "Expected a scale center and a positive scale factor\n";
     return 1;
   }
-  if (!std::isfinite(centerX) || !std::isfinite(centerY)
-      || !std::isfinite(factor) || factor <= 0.0) {
+  if (!std::isfinite(centerX) || !std::isfinite(centerY) || !std::isfinite(factor) || factor <= 0.0)
+  {
     std::cerr << "Scale coordinates must be finite and the factor must be positive\n";
     return 1;
   }
 
-  try {
+  try
+  {
     const semin::point_t scaleCenter = {centerX, centerY};
     semin::Rectangle rectangle({2.0, 1.0}, 4.0, 3.0);
     semin::Xquare xquare({-1.0, 2.0}, 4.0);
@@ -37,7 +39,9 @@ int main()
     semin::printSummary("Before scaling", shapes, names, shapeCount);
     semin::scaleShapes(shapes, shapeCount, scaleCenter, factor);
     semin::printSummary("After scaling", shapes, names, shapeCount);
-  } catch (const std::exception & error) {
+  }
+  catch (const std::exception & error)
+  {
     std::cerr << "Geometry error: " << error.what() << "\n";
     return 2;
   }
