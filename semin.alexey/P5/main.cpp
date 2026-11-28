@@ -8,7 +8,6 @@
 #include <exception>
 #include <iomanip>
 #include <iostream>
-
 int main()
 {
   double centerX = 0.0;
