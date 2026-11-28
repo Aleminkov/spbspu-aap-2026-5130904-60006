@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include "../shape-common.hpp"
+#include "shape-common.hpp"
 
 namespace
 {
